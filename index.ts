@@ -19,7 +19,7 @@ function flatRequestUrl(req: Request): string {
   while (true) {
     console.log('══════════════════════════════════════════════');
     await Promise.allSettled(
-      new Array(40).fill(3).map(async (_, idx) => {
+      new Array(25).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
         let stateFile = 'state_' + Math.floor(Math.random() * 10000) + '.json';
         const SKIP_THRESHOLD = 0.25;
@@ -50,7 +50,7 @@ function flatRequestUrl(req: Request): string {
 
           // Navegações para popular lista de Ads
           await page.goto('https://google.com.br');
-          await page.goto('https://google.com');
+          await page.goto('https://google.com', { waitUntil: 'networkidle' });
           await page.goto('https://youtube.com');
 
           // 2 disparos de view_promotion
