@@ -19,10 +19,10 @@ function flatRequestUrl(req: Request): string {
   while (true) {
     console.log('══════════════════════════════════════════════');
     await Promise.allSettled(
-      new Array(10).fill(3).map(async (_, idx) => {
+      new Array(40).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
         let stateFile = 'state_' + Math.floor(Math.random() * 10000) + '.json';
-        const SKIP_THRESHOLD = 0.5;
+        const SKIP_THRESHOLD = 0.25;
 
         try {
           if (!fs.existsSync(stateFile)) {
@@ -49,27 +49,9 @@ function flatRequestUrl(req: Request): string {
           });
 
           // Navegações para popular lista de Ads
-          await page.goto('https://google.com.br', {
-            waitUntil: 'networkidle',
-          });
-          await page.goto('https://google.com', { waitUntil: 'networkidle' });
-          await page.goto('https://youtube.com', { waitUntil: 'networkidle' });
-          await page.goto('https://www.nytimes.com/', {
-            waitUntil: 'networkidle',
-          });
-          let consent = page.locator('[data-testid="GDPR-accept"]');
-          if (await consent.count()) {
-            await consent.click();
-            await page.reload();
-          }
-          await page.goto('https://www.msn.com/pt-br', {
-            waitUntil: 'networkidle',
-          });
-          consent = page.locator('button:has-text("Aceito")');
-          if (await consent.count()) {
-            await consent.click();
-            await page.reload();
-          }
+          await page.goto('https://google.com.br');
+          await page.goto('https://google.com');
+          await page.goto('https://youtube.com');
 
           // 2 disparos de view_promotion
           await Promise.all([
