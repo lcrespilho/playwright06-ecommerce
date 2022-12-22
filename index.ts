@@ -22,7 +22,7 @@ function flatRequestUrl(req: Request): string {
       new Array(25).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
         let stateFile = 'state_' + Math.floor(Math.random() * 10000) + '.json';
-        const SKIP_THRESHOLD = 0.25;
+        const SKIP_THRESHOLD = 0.35;
 
         try {
           if (!fs.existsSync(stateFile)) {
@@ -49,9 +49,18 @@ function flatRequestUrl(req: Request): string {
           });
 
           // Navegações para popular lista de Ads
-          await page.goto('https://google.com.br');
-          await page.goto('https://google.com', { waitUntil: 'networkidle' });
-          await page.goto('https://youtube.com');
+          await page.goto('https://google.com.br', {
+            timeout: 60000,
+            waitUntil: 'networkidle',
+          });
+          await page.goto('https://google.com', {
+            timeout: 60000,
+            waitUntil: 'networkidle',
+          });
+          await page.goto('https://youtube.com', {
+            timeout: 60000,
+            waitUntil: 'networkidle',
+          });
 
           // 2 disparos de view_promotion
           await Promise.all([
