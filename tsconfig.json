@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "CommonJS",
+    "outDir": "out",
+    "inlineSourceMap": true,
+    "esModuleInterop": true,
+    "lib": ["DOM", "ESNext"]
+  }
+}
