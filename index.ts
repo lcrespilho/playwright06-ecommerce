@@ -16,17 +16,20 @@ function flatRequestUrl(req: Request): string {
     devtools: process.env.DEVTOOLS === 'true',
   });
 
-  while (true) {
+  let counter = Infinity;
+  while (counter--) {
     console.log('══════════════════════════════════════════════');
     await Promise.allSettled(
-      new Array(25).fill(3).map(async (_, idx) => {
+      new Array(30).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
         let stateFile = 'state_' + Math.floor(Math.random() * 10000) + '.json';
+        let newStateFile = false;
         const SKIP_THRESHOLD = 0.35;
 
         try {
           if (!fs.existsSync(stateFile)) {
             fs.writeFileSync(stateFile, '{}', 'utf8');
+            newStateFile = true;
           }
           context = await browser.newContext({
             storageState: stateFile,
@@ -44,23 +47,25 @@ function flatRequestUrl(req: Request): string {
                 .match(/&en=.*?&/g)
                 .map(s => s.replace(/&(en=)?/g, ''))
                 .map(s => (s === 'purchase' ? c.red(s) : s));
-              console.log(`${idx}:`, events.join(', '));
+              console.log(`${stateFile}: ${events.join(', ')}`);
             }
           });
 
-          // Navegações para popular lista de Ads
-          await page.goto('https://google.com.br', {
-            timeout: 60000,
-            waitUntil: 'networkidle',
-          });
-          await page.goto('https://google.com', {
-            timeout: 60000,
-            waitUntil: 'networkidle',
-          });
-          await page.goto('https://youtube.com', {
-            timeout: 60000,
-            waitUntil: 'networkidle',
-          });
+          // Navegações para popular lista de Ads, em caso de novo usuário.
+          if (newStateFile) {
+            await page.goto('https://google.com.br', {
+              timeout: 60000,
+              waitUntil: 'networkidle',
+            });
+            await page.goto('https://google.com', {
+              timeout: 60000,
+              waitUntil: 'networkidle',
+            });
+            await page.goto('https://youtube.com', {
+              timeout: 60000,
+              waitUntil: 'networkidle',
+            });
+          }
 
           const referrals = [
             'https://www.google.com/',
