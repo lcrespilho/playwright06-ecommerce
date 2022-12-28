@@ -62,11 +62,19 @@ function flatRequestUrl(req: Request): string {
             waitUntil: 'networkidle',
           });
 
+          const referrals = [
+            'https://www.google.com/',
+            'https://www.facebook.com/',
+            'https://www.bing.com/',
+            'https://br.yahoo.com/',
+            'https://www.msn.com/',
+          ];
+
           // 2 disparos de view_promotion
           await Promise.all([
             page.goto('https://louren.co.in/ecommerce/home.html', {
               waitUntil: 'load',
-              referer: 'https://google.com/',
+              referer: referrals[Math.floor(Math.random() * 5)],
             }),
             page.waitForRequest(/google.*collect\?v=2/),
           ]);
