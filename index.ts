@@ -20,11 +20,12 @@ function flatRequestUrl(req: Request): string {
   while (counter--) {
     console.log('══════════════════════════════════════════════');
     await Promise.allSettled(
-      new Array(30).fill(3).map(async (_, idx) => {
+      new Array(60).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
-        let stateFile = 'state_' + Math.floor(Math.random() * 10000) + '.json';
+        let stateFile = '/tmp/state_' + Math.floor(Math.random() * 10000) + '.json'; // para ser usado somente no meu Mac
+        //let stateFile = 'state_' + Math.floor(Math.random() * 10000) + '.json'; // para ser usado em todos os outros PCs
         let newStateFile = false;
-        const SKIP_THRESHOLD = 0.35;
+        const SKIP_THRESHOLD = 0.25;
 
         try {
           if (!fs.existsSync(stateFile)) {
@@ -35,8 +36,8 @@ function flatRequestUrl(req: Request): string {
             storageState: stateFile,
             viewport: null,
             userAgent:
-              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36',
-            //...devices['iPhone 12 Pro'],
+            //...devices['iPhone 12 Pro'], // para ser usado na instância do GCP
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', // para ser usado em todos os outros PCs
           });
           page = await context.newPage();
 
@@ -46,8 +47,12 @@ function flatRequestUrl(req: Request): string {
               const events = url
                 .match(/&en=.*?&/g)
                 .map(s => s.replace(/&(en=)?/g, ''))
-                .map(s => (s === 'purchase' ? c.red(s) : s));
+                .map(s => (s === 'purchase' ? c.red(s) : s === 'user_engagement' ? c.greenBright(s) : s));
               console.log(`${stateFile}: ${events.join(', ')}`);
+            } else if (url.match(/doubleclick.*collect/)) {
+              console.log(`${stateFile}: ` + c.blue('doubleclick'));
+            } else if (url.match(/google.*ga-audiences/)) {
+              console.log(`${stateFile}: ` + c.blue('ga-audiences'));
             }
           });
 
@@ -83,6 +88,9 @@ function flatRequestUrl(req: Request): string {
             }),
             page.waitForRequest(/google.*collect\?v=2/),
           ]);
+          // Simula sessão engajada, para enviar o evento user_engagement, para
+          // tentar popular audiência no Ads.
+          await page.waitForTimeout(15000);
 
           if (Math.random() < SKIP_THRESHOLD) return;
           // Aguarda disparo de select_promotion, porque a página
