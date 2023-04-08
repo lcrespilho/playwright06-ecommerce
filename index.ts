@@ -22,7 +22,7 @@ function flatRequestUrl(req: Request): string {
       new Array(5).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
         let stateFile =
-          '/tmp/state_' + Math.floor(Math.random() * 10000) + '.json';
+          '/tmp/state_' + Math.floor(Math.random() * 1000) + '.json';
         let newStateFile = false;
         const SKIP_THRESHOLD = 0.25;
 
