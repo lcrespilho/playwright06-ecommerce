@@ -1,4 +1,4 @@
-import { webkit, chromium, firefox, devices } from 'playwright';
+import { chromium, devices } from 'playwright';
 import type { Page, BrowserContext, Request } from 'playwright';
 import c from 'ansi-colors';
 import fs from 'fs';
@@ -16,14 +16,13 @@ function flatRequestUrl(req: Request): string {
     devtools: process.env.DEVTOOLS === 'true',
   });
 
-  let counter = Infinity;
-  while (counter--) {
+  while (true) {
     console.log('══════════════════════════════════════════════');
     await Promise.allSettled(
-      new Array(60).fill(3).map(async (_, idx) => {
+      new Array(5).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
-        let stateFile = '/tmp/state_' + Math.floor(Math.random() * 10000) + '.json'; // para ser usado somente no meu Mac
-        //let stateFile = 'state_' + Math.floor(Math.random() * 10000) + '.json'; // para ser usado em todos os outros PCs
+        let stateFile =
+          '/tmp/state_' + Math.floor(Math.random() * 10000) + '.json';
         let newStateFile = false;
         const SKIP_THRESHOLD = 0.25;
 
@@ -35,9 +34,7 @@ function flatRequestUrl(req: Request): string {
           context = await browser.newContext({
             storageState: stateFile,
             viewport: null,
-            userAgent:
-            //...devices['iPhone 12 Pro'], // para ser usado na instância do GCP
-            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36', // para ser usado em todos os outros PCs
+            ...devices['iPhone 13 Pro'],
           });
           page = await context.newPage();
 
@@ -47,7 +44,13 @@ function flatRequestUrl(req: Request): string {
               const events = url
                 .match(/&en=.*?&/g)
                 .map(s => s.replace(/&(en=)?/g, ''))
-                .map(s => (s === 'purchase' ? c.red(s) : s === 'user_engagement' ? c.greenBright(s) : s));
+                .map(s =>
+                  s === 'purchase'
+                    ? c.red(s)
+                    : s === 'user_engagement'
+                    ? c.greenBright(s)
+                    : s
+                );
               console.log(`${stateFile}: ${events.join(', ')}`);
             } else if (url.match(/doubleclick.*collect/)) {
               console.log(`${stateFile}: ` + c.blue('doubleclick'));
