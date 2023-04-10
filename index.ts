@@ -1,4 +1,4 @@
-import { chromium, devices } from 'playwright';
+import { firefox, devices } from 'playwright';
 import type { Page, BrowserContext, Request } from 'playwright';
 import c from 'ansi-colors';
 import fs from 'fs';
@@ -11,7 +11,7 @@ function flatRequestUrl(req: Request): string {
 }
 
 (async () => {
-  const browser = await chromium.launch({
+  const browser = await firefox.launch({
     headless: process.env.HEADLESS !== 'false',
     devtools: process.env.DEVTOOLS === 'true',
   });
