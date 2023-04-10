@@ -1,4 +1,4 @@
-import { firefox, devices } from 'playwright';
+import { firefox } from 'playwright';
 import type { Page, BrowserContext, Request } from 'playwright';
 import c from 'ansi-colors';
 import fs from 'fs';
@@ -10,37 +10,50 @@ function flatRequestUrl(req: Request): string {
     .replace(/&$/g, '');
 }
 
+function updateLogs(logs: object) {
+  console.clear();
+  console.log('status...\n');
+  for (const [key, value] of Object.entries(logs)) {
+    console.log(`[${key}]: ${value}`);
+  }
+}
+
 (async () => {
   const browser = await firefox.launch({
     headless: process.env.HEADLESS !== 'false',
     devtools: process.env.DEVTOOLS === 'true',
   });
 
+  let logs = {};
   while (true) {
-    console.log('══════════════════════════════════════════════');
+    logs = Object.fromEntries(Object.entries(logs).slice(-30)); // limita o tamanho de `logs`
     await Promise.allSettled(
       new Array(5).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
         let stateFile =
           '/tmp/state_' + Math.floor(Math.random() * 1000) + '.json';
-        let newStateFile = false;
         const SKIP_THRESHOLD = 0.25;
 
         try {
           if (!fs.existsSync(stateFile)) {
             fs.writeFileSync(stateFile, '{}', 'utf8');
-            newStateFile = true;
           }
           context = await browser.newContext({
             storageState: stateFile,
             viewport: null,
-            ...devices['iPhone 13 Pro'],
           });
           page = await context.newPage();
+
+          page.on('close', page => {
+            logs[stateFile] = logs[stateFile] || '';
+            logs[stateFile] += ' ' + c.gray('page closed');
+          });
 
           page.on('request', async (req: Request) => {
             const url = flatRequestUrl(req);
             if (url.match(/google.*collect\?v=2/)) {
+              let [, _et = ''] =
+                url.match(/en=user_engagement.*?&_et=(\d+)/) || [];
               const events = url
                 .match(/&en=.*?&/g)
                 .map(s => s.replace(/&(en=)?/g, ''))
@@ -48,32 +61,14 @@ function flatRequestUrl(req: Request): string {
                   s === 'purchase'
                     ? c.red(s)
                     : s === 'user_engagement'
-                    ? c.greenBright(s)
+                    ? c.green(s + ` (${_et})`)
                     : s
                 );
-              console.log(`${stateFile}: ${events.join(', ')}`);
-            } else if (url.match(/doubleclick.*collect/)) {
-              console.log(`${stateFile}: ` + c.blue('doubleclick'));
-            } else if (url.match(/google.*ga-audiences/)) {
-              console.log(`${stateFile}: ` + c.blue('ga-audiences'));
+              logs[stateFile] = logs[stateFile] || '';
+              logs[stateFile] += ' ' + events.join(', ');
+              updateLogs(logs);
             }
           });
-
-          // Navegações para popular lista de Ads, em caso de novo usuário.
-          if (newStateFile) {
-            await page.goto('https://google.com.br', {
-              timeout: 60000,
-              waitUntil: 'networkidle',
-            });
-            await page.goto('https://google.com', {
-              timeout: 60000,
-              waitUntil: 'networkidle',
-            });
-            await page.goto('https://youtube.com', {
-              timeout: 60000,
-              waitUntil: 'networkidle',
-            });
-          }
 
           const referrals = [
             'https://www.google.com/',
@@ -83,24 +78,42 @@ function flatRequestUrl(req: Request): string {
             'https://www.msn.com/',
           ];
 
+          const UTMs = [
+            '?utm_source=google&utm_medium=cpc&utm_campaign=google-cpc-campaign',
+            '?utm_source=facebook&utm_medium=cpc&utm_campaign=facebook-cpc-campaign',
+            '?utm_source=bing&utm_medium=cpc&utm_campaign=bing-cpc-campaign',
+            '?utm_source=yahoo&utm_medium=cpc&utm_campaign=yahoo-cpc-campaign',
+            '?utm_source=msn&utm_medium=cpc&utm_campaign=msn-cpc-campaign',
+            '?utm_source=newsletter&utm_medium=email&utm_campaign=newsletter-email-campaign',
+            '?utm_source=myaffiliate&utm_medium=affiliate&utm_campaign=myaffiliate-affiliate-campaign',
+            '?utm_source=mysource&utm_medium=display&utm_campaign=mysource-display-campaign',
+          ];
+
+          // Decides if referral or UTM traffic:
+          let utm = '';
+          let referer = undefined;
+          if (Math.random() < 0.5) {
+            // UTM
+            utm = UTMs[Math.floor(Math.random() * UTMs.length)];
+          } else {
+            // referer
+            referer = referrals[Math.floor(Math.random() * referrals.length)];
+          }
           // 2 disparos de view_promotion
           await Promise.all([
-            page.goto('https://louren.co.in/ecommerce/home.html', {
+            page.goto('https://louren.co.in/ecommerce/home.html' + utm, {
               waitUntil: 'load',
-              referer: referrals[Math.floor(Math.random() * 5)],
+              referer,
             }),
             page.waitForRequest(/google.*collect\?v=2/),
           ]);
-          // Simula sessão engajada, para enviar o evento user_engagement, para
-          // tentar popular audiência no Ads.
-          await page.waitForTimeout(15000);
+
+          // at least 1s to simulate engaged session
+          // at least 500ms to collect "select_promotion" (deliberately delayed by 500ms)
+          await page.waitForTimeout(3000);
 
           if (Math.random() < SKIP_THRESHOLD) return;
-          // Aguarda disparo de select_promotion, porque a página
-          // tem delay de 500ms para disparar esse evento.
-          await page.waitForTimeout(1000);
 
-          if (Math.random() < SKIP_THRESHOLD) return;
           // view_item_list em PDL
           await Promise.all([
             page
@@ -108,7 +121,7 @@ function flatRequestUrl(req: Request): string {
                 Math.random() < 0.75 ? 'text=pdl1.html' : 'text=pdl2.html'
               )
               .click(),
-            page.waitForNavigation({ waitUntil: 'networkidle' }),
+            page.waitForURL(/pdl.\.html/, { waitUntil: 'networkidle' }),
           ]);
 
           if (Math.random() < SKIP_THRESHOLD) return;
@@ -119,7 +132,7 @@ function flatRequestUrl(req: Request): string {
               .locator('button', { hasText: 'pdp' })
               .nth(Math.random() < 0.75 ? 0 : 1)
               .click(),
-            page.waitForNavigation({ waitUntil: 'networkidle' }),
+            page.waitForURL(/pdp.\.html/, { waitUntil: 'networkidle' }),
           ]);
 
           if (Math.random() < SKIP_THRESHOLD) return;
@@ -130,14 +143,14 @@ function flatRequestUrl(req: Request): string {
           // view_cart no carregamento do cart.html, estando na PDP
           await Promise.all([
             page.locator('text=cart.html').click(),
-            page.waitForNavigation({ waitUntil: 'networkidle' }),
+            page.waitForURL(/cart\.html/, { waitUntil: 'networkidle' }),
           ]);
 
           if (Math.random() < SKIP_THRESHOLD) return;
           // begin_checkout no clique para ir pro checkout, estando no cart
           await Promise.all([
             page.locator('text=checkout').click(),
-            page.waitForNavigation({ waitUntil: 'networkidle' }),
+            page.waitForURL(/checkout\.html/, { waitUntil: 'networkidle' }),
           ]);
 
           if (Math.random() < SKIP_THRESHOLD) return;
@@ -154,7 +167,7 @@ function flatRequestUrl(req: Request): string {
           // purchase, no carregamento da TYP
           await Promise.all([
             page.locator('text=finalizar compra').click(),
-            page.waitForNavigation({ waitUntil: 'networkidle' }),
+            page.waitForURL(/typ\.html/, { waitUntil: 'networkidle' }),
           ]);
           await page.waitForTimeout(1500);
         } catch (error) {
