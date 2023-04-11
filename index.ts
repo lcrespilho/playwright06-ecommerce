@@ -28,7 +28,7 @@ function updateLogs(logs: object) {
   while (true) {
     logs = Object.fromEntries(Object.entries(logs).slice(-30)); // limita o tamanho de `logs`
     await Promise.allSettled(
-      new Array(5).fill(3).map(async (_, idx) => {
+      new Array(2).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
         let stateFile =
           '/tmp/state_' + Math.floor(Math.random() * 1000) + '.json';
@@ -41,6 +41,12 @@ function updateLogs(logs: object) {
           context = await browser.newContext({
             storageState: stateFile,
             viewport: null,
+          });
+          await context.addInitScript({
+            content: `
+              window.is_playwright_bot = true;
+              //window.debug_mode = true;
+            `,
           });
           page = await context.newPage();
 
@@ -108,9 +114,9 @@ function updateLogs(logs: object) {
             page.waitForRequest(/google.*collect\?v=2/),
           ]);
 
-          // at least 1s to simulate engaged session
+          // at least 10s to simulate engaged session
           // at least 500ms to collect "select_promotion" (deliberately delayed by 500ms)
-          await page.waitForTimeout(3000);
+          await page.waitForTimeout(10000);
 
           if (Math.random() < SKIP_THRESHOLD) return;
 
