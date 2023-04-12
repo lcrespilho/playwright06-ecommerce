@@ -1,4 +1,4 @@
-import { firefox } from 'playwright';
+import { chromium } from 'playwright';
 import type { Page, BrowserContext, Request } from 'playwright';
 import c from 'ansi-colors';
 import fs from 'fs';
@@ -12,14 +12,14 @@ function flatRequestUrl(req: Request): string {
 
 function updateLogs(logs: object) {
   console.clear();
-  console.log('status...\n');
+  console.log('Logs:\n');
   for (const [key, value] of Object.entries(logs)) {
     console.log(`[${key}]: ${value}`);
   }
 }
 
 (async () => {
-  const browser = await firefox.launch({
+  const browser = await chromium.launch({
     headless: process.env.HEADLESS !== 'false',
     devtools: process.env.DEVTOOLS === 'true',
   });
@@ -27,6 +27,11 @@ function updateLogs(logs: object) {
   let logs = {};
   while (true) {
     logs = Object.fromEntries(Object.entries(logs).slice(-30)); // limita o tamanho de `logs`
+    
+    // safeguard: it shouldn't be any context here
+    const contexts = browser.contexts();
+    for (const context of contexts) await context.close();
+
     await Promise.allSettled(
       new Array(2).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
