@@ -1,4 +1,4 @@
-import { chromium } from 'playwright';
+import { chromium, devices } from 'playwright';
 import type { Page, BrowserContext, Request } from 'playwright';
 import c from 'ansi-colors';
 import fs from 'fs';
@@ -46,6 +46,7 @@ function updateLogs(logs: object) {
           context = await browser.newContext({
             storageState: stateFile,
             viewport: null,
+            ...devices['Nexus 10']
           });
           await context.addInitScript({
             content: `
