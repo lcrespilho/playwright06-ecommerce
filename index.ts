@@ -50,6 +50,7 @@ function updateLogs(logs: object) {
           await context.addInitScript({
             content: `
               window.is_playwright_bot = true;
+              //window.debug_mode = true; // uncomment to enable GA4 DebugView
             `,
           });
           page = await context.newPage();
