@@ -27,7 +27,7 @@ function updateLogs(logs: object) {
   let logs = {};
   while (true) {
     logs = Object.fromEntries(Object.entries(logs).slice(-30)); // limita o tamanho de `logs`
-    
+
     // safeguard: it shouldn't be any context here
     const contexts = browser.contexts();
     for (const context of contexts) await context.close();
@@ -35,8 +35,7 @@ function updateLogs(logs: object) {
     await Promise.allSettled(
       new Array(2).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
-        let stateFile =
-          '/tmp/state_' + Math.floor(Math.random() * 1000) + '.json';
+        let stateFile = '/tmp/state_' + Math.floor(Math.random() * 1000) + '.json';
         const SKIP_THRESHOLD = 0.25;
 
         try {
@@ -46,7 +45,7 @@ function updateLogs(logs: object) {
           context = await browser.newContext({
             storageState: stateFile,
             viewport: null,
-            ...devices['Nexus 10']
+            ...devices['Nexus 10'],
           });
           await context.addInitScript({
             content: `
@@ -64,18 +63,11 @@ function updateLogs(logs: object) {
           page.on('request', async (req: Request) => {
             const url = flatRequestUrl(req);
             if (url.match(/google.*collect\?v=2/)) {
-              let [, _et = ''] =
-                url.match(/en=user_engagement.*?&_et=(\d+)/) || [];
+              let [, _et = ''] = url.match(/en=user_engagement.*?&_et=(\d+)/) || [];
               const events = url
                 .match(/&en=.*?&/g)
                 .map(s => s.replace(/&(en=)?/g, ''))
-                .map(s =>
-                  s === 'purchase'
-                    ? c.red(s)
-                    : s === 'user_engagement'
-                    ? c.green(s + ` (${_et})`)
-                    : s
-                );
+                .map(s => (s === 'purchase' ? c.red(s) : s === 'user_engagement' ? c.green(s + ` (${_et})`) : s));
               logs[stateFile] = logs[stateFile] || '';
               logs[stateFile] += ' ' + events.join(', ');
               updateLogs(logs);
@@ -92,6 +84,7 @@ function updateLogs(logs: object) {
 
           const UTMs = [
             '?utm_source=google&utm_medium=cpc&utm_campaign=google-cpc-campaign',
+            '?gclid=gclidAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
             '?utm_source=facebook&utm_medium=cpc&utm_campaign=facebook-cpc-campaign',
             '?utm_source=bing&utm_medium=cpc&utm_campaign=bing-cpc-campaign',
             '?utm_source=yahoo&utm_medium=cpc&utm_campaign=yahoo-cpc-campaign',
@@ -128,11 +121,7 @@ function updateLogs(logs: object) {
 
           // view_item_list em PDL
           await Promise.all([
-            page
-              .locator(
-                Math.random() < 0.75 ? 'text=pdl1.html' : 'text=pdl2.html'
-              )
-              .click(),
+            page.locator(Math.random() < 0.75 ? 'text=pdl1.html' : 'text=pdl2.html').click(),
             page.waitForURL(/pdl.\.html/, { waitUntil: 'networkidle' }),
           ]);
 
