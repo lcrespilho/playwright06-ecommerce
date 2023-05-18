@@ -26,7 +26,7 @@ function updateLogs(logs: object) {
 
   let logs = {};
   while (true) {
-    logs = Object.fromEntries(Object.entries(logs).slice(-30)); // limita o tamanho de `logs`
+    logs = Object.fromEntries(Object.entries(logs).slice(-30)); // limit `logs` size
 
     // safeguard: it shouldn't be any context here
     const contexts = browser.contexts();
@@ -80,6 +80,7 @@ function updateLogs(logs: object) {
             'https://www.bing.com/',
             'https://br.yahoo.com/',
             'https://www.msn.com/',
+            undefined, // (direct)
           ];
 
           const UTMs = [
@@ -104,7 +105,8 @@ function updateLogs(logs: object) {
             // referer
             referer = referrals[Math.floor(Math.random() * referrals.length)];
           }
-          // 2 disparos de view_promotion
+
+          // 2 view_promotion events
           await Promise.all([
             page.goto('https://louren.co.in/ecommerce/home.html' + utm, {
               waitUntil: 'load',
@@ -112,11 +114,9 @@ function updateLogs(logs: object) {
             }),
             page.waitForRequest(/google.*collect\?v=2/),
           ]);
-
           // at least 10s to simulate engaged session
           // at least 500ms to collect "select_promotion" (deliberately delayed by 500ms)
           await page.waitForTimeout(10000);
-
           if (Math.random() < SKIP_THRESHOLD) return;
 
           // view_item_list em PDL
@@ -124,10 +124,11 @@ function updateLogs(logs: object) {
             page.locator(Math.random() < 0.75 ? 'text=pdl1.html' : 'text=pdl2.html').click(),
             page.waitForURL(/pdl.\.html/, { waitUntil: 'networkidle' }),
           ]);
-
+          await page.waitForTimeout(6000); // wait for events
           if (Math.random() < SKIP_THRESHOLD) return;
-          // select_item quando clica no produto
-          // view_item no carregamento da pdp
+
+          // select_item when product click
+          // view_item when PDP loads
           await Promise.all([
             page
               .locator('button', { hasText: 'pdp' })
@@ -135,42 +136,47 @@ function updateLogs(logs: object) {
               .click(),
             page.waitForURL(/pdp.\.html/, { waitUntil: 'networkidle' }),
           ]);
-
+          await page.waitForTimeout(6000); // wait for events
           if (Math.random() < SKIP_THRESHOLD) return;
-          // add_to_cart, estando na PDP
+
+          // add_to_cart
           await page.locator('text=add_to_cart').click();
-
+          await page.waitForTimeout(6000); // wait for events
           if (Math.random() < SKIP_THRESHOLD) return;
-          // view_cart no carregamento do cart.html, estando na PDP
+
+          // view_cart on cart.html load
           await Promise.all([
             page.locator('text=cart.html').click(),
             page.waitForURL(/cart\.html/, { waitUntil: 'networkidle' }),
           ]);
-
+          await page.waitForTimeout(6000); // wait for events
           if (Math.random() < SKIP_THRESHOLD) return;
-          // begin_checkout no clique para ir pro checkout, estando no cart
+
+          // begin_checkout
           await Promise.all([
             page.locator('text=checkout').click(),
             page.waitForURL(/checkout\.html/, { waitUntil: 'networkidle' }),
           ]);
-
+          await page.waitForTimeout(6000); // wait for events
           if (Math.random() < SKIP_THRESHOLD) return;
-          // add_payment_info, estando no checkout
+
+          // add_payment_info
           await page.locator('text=add_payment_info').click();
-
+          await page.waitForTimeout(6000); // wait for events
           if (Math.random() < SKIP_THRESHOLD) return;
-          // add_shipping_info, estando no checkout
+
+          // add_shipping_info
           await page.locator('text=add_shipping_info').click();
-
+          await page.waitForTimeout(6000); // wait for events
           await page.waitForTimeout(1000);
-
           if (Math.random() < SKIP_THRESHOLD) return;
-          // purchase, no carregamento da TYP
+
+          // purchase
           await Promise.all([
             page.locator('text=finalizar compra').click(),
             page.waitForURL(/typ\.html/, { waitUntil: 'networkidle' }),
           ]);
-          await page.waitForTimeout(1500);
+          await page.waitForTimeout(6000); // wait for events
         } catch (error) {
           console.log('[💩]', error);
         } finally {
