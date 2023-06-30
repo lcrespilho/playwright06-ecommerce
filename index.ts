@@ -2,7 +2,12 @@ import { chromium, devices } from 'playwright';
 import type { Page, BrowserContext, Request } from 'playwright';
 import c from 'ansi-colors';
 import fs from 'fs';
-
+/**
+ * Returns a flattened request URL by combining the URL and postData parameters
+ * of the given Request object.
+ * @param {Request} req The Request object containing the URL and postData.
+ * @return {*}  {string} A string representing the flattened request URL.
+ */
 function flatRequestUrl(req: Request): string {
   return (req.url() + '&' + (req.postData() || ''))
     .replace(/\r\n|\n|\r/g, '&')
@@ -10,6 +15,11 @@ function flatRequestUrl(req: Request): string {
     .replace(/&$/g, '');
 }
 
+/**
+ * Prints to console the { key: value } object parameter as "key: value" string.
+ *
+ * @param {object} logs Object containing the data to be printed.
+ */
 function updateLogs(logs: object) {
   console.clear();
   console.log('Logs:\n');
@@ -33,14 +43,21 @@ function updateLogs(logs: object) {
     for (const context of contexts) await context.close();
 
     await Promise.allSettled(
+      // 2 navegações concorrentes
       new Array(2).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
-        let stateFile = '/tmp/state_' + Math.floor(Math.random() * 1000) + '.json';
+        let stateFile = '/tmp/state_' + Math.floor(Math.random() * 2000) + '.json';
         const SKIP_THRESHOLD = 0.25;
 
         try {
           if (!fs.existsSync(stateFile)) {
+            // se não existe arquivo de estado, cria um novo
             fs.writeFileSync(stateFile, '{}', 'utf8');
+          } else {
+            // small probability to reset user state
+            if (Math.random() < 0.02) {
+              fs.writeFileSync(stateFile, '{}', 'utf8');
+            }
           }
           context = await browser.newContext({
             storageState: stateFile,
@@ -49,27 +66,35 @@ function updateLogs(logs: object) {
           });
           await context.addInitScript({
             content: `
-              window.is_playwright_bot = true;
+              window.is_playwright_bot = true; // feeds GA4 custom dimensions (event and user scopes)
               //window.debug_mode = true; // uncomment to enable GA4 DebugView
             `,
           });
           page = await context.newPage();
 
           page.on('close', page => {
-            logs[stateFile] = logs[stateFile] || '';
-            logs[stateFile] += ' ' + c.gray('page closed');
+            logs[stateFile] = (logs[stateFile] || '') + ' ' + c.gray('page closed');
           });
 
           page.on('request', async (req: Request) => {
             const url = flatRequestUrl(req);
+            // GA4 hit
             if (url.match(/google.*collect\?v=2/)) {
-              let [, _et = ''] = url.match(/en=user_engagement.*?&_et=(\d+)/) || [];
+              let [, _et = ''] = url.match(/en=user_engagement.*?&_et=(\d+)/) || []; // extracts _et parameter, if present
               const events = url
-                .match(/&en=.*?&/g)
-                .map(s => s.replace(/&(en=)?/g, ''))
-                .map(s => (s === 'purchase' ? c.red(s) : s === 'user_engagement' ? c.green(s + ` (${_et})`) : s));
-              logs[stateFile] = logs[stateFile] || '';
-              logs[stateFile] += ' ' + events.join(', ');
+                .match(/&en=[^&]+/g) // ['&en=event1', '&en=event2', ...]
+                .map(s => s.replace(/&en=/g, '')) // ['event1', 'event2', ...]
+                .map(s => {
+                  switch (s) {
+                    case 'user_engagement':
+                      return c.green(s + ` (${_et})`);
+                    case 'purchase':
+                      return c.red(s);
+                    default:
+                      return s;
+                  }
+                });
+              logs[stateFile] = (logs[stateFile] || '') + ' ' + events.join(', ');
               updateLogs(logs);
             }
           });
@@ -115,7 +140,7 @@ function updateLogs(logs: object) {
             page.waitForRequest(/google.*collect\?v=2/),
           ]);
           // at least 10s to simulate engaged session
-          // at least 500ms to collect "select_promotion" (deliberately delayed by 500ms)
+          // at least 500ms to collect "select_promotion" (deliberately delayed by 500ms on website)
           await page.waitForTimeout(10000);
           if (Math.random() < SKIP_THRESHOLD) return;
 
