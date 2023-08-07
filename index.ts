@@ -55,7 +55,7 @@ function updateLogs(logs: object) {
             fs.writeFileSync(stateFile, '{}', 'utf8');
           } else {
             // small probability to reset user state
-            if (Math.random() < 0.02) {
+            if (Math.random() < 0.05) {
               fs.writeFileSync(stateFile, '{}', 'utf8');
             }
           }
