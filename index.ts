@@ -206,7 +206,7 @@ function updateLogs(logs: object) {
           console.log('[💩]', error);
         } finally {
           if (page && !page.isClosed()) {
-            await page.close();
+            await page.close({ runBeforeUnload: true });
             await context.storageState({ path: stateFile });
             await context.close();
           }
