@@ -105,19 +105,19 @@ function updateLogs(logs: object) {
             'https://www.bing.com/',
             'https://br.yahoo.com/',
             'https://www.msn.com/',
-            undefined, // (direct)
+            // undefined, // (direct) // matei direto em 05/12/2023
           ];
 
           const UTMs = [
-            '?utm_source=google&utm_medium=cpc&utm_campaign=google-cpc-campaign',
+            '?utm_source=google&utm_medium=cpc&utm_campaign=google-cpc-campaign&utm_id=google-cpc-id&utm_term=google-cpc-term&utm_content=google-cpc-content',
             '?gclid=gclidAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-            '?utm_source=facebook&utm_medium=cpc&utm_campaign=facebook-cpc-campaign',
-            '?utm_source=bing&utm_medium=cpc&utm_campaign=bing-cpc-campaign',
-            '?utm_source=yahoo&utm_medium=cpc&utm_campaign=yahoo-cpc-campaign',
-            '?utm_source=msn&utm_medium=cpc&utm_campaign=msn-cpc-campaign',
-            '?utm_source=newsletter&utm_medium=email&utm_campaign=newsletter-email-campaign',
-            '?utm_source=myaffiliate&utm_medium=affiliate&utm_campaign=myaffiliate-affiliate-campaign',
-            '?utm_source=mysource&utm_medium=display&utm_campaign=mysource-display-campaign',
+            '?utm_source=facebook&utm_medium=cpc&utm_campaign=facebook-cpc-campaign&utm_id=facebook-cpc-id&utm_term=facebook-cpc-term&utm_content=facebook-cpc-content',
+            '?utm_source=bing&utm_medium=cpc&utm_campaign=bing-cpc-campaign&utm_id=bing-cpc-id&utm_term=bing-cpc-term&utm_content=bing-cpc-content',
+            '?utm_source=yahoo&utm_medium=cpc&utm_campaign=yahoo-cpc-campaign&utm_id=yahoo-cpc-id&utm_term=yahoo-cpc-term&utm_content=yahoo-cpc-content',
+            '?utm_source=msn&utm_medium=cpc&utm_campaign=msn-cpc-campaign&utm_id=msn-cpc-id&utm_term=msn-cpc-term&utm_content=msn-cpc-content',
+            '?utm_source=newsletter&utm_medium=email&utm_campaign=newsletter-email-campaign&utm_id=newsletter-email-id&utm_term=newsletter-email-term&utm_content=newsletter-email-content',
+            '?utm_source=myaffiliate&utm_medium=affiliate&utm_campaign=myaffiliate-affiliate-campaign&utm_id=myaffiliate-affiliate-id&utm_term=myaffiliate-affiliate-term&utm_content=myaffiliate-affiliate-content',
+            '?utm_source=mysource&utm_medium=display&utm_campaign=mysource-display-campaign&utm_id=mysource-display-id&utm_term=mysource-display-term&utm_content=mysource-display-content',
           ];
 
           // Decides if referral or UTM traffic:
