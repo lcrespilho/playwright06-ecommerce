@@ -105,7 +105,7 @@ function updateLogs(logs: object) {
             'https://www.bing.com/',
             'https://br.yahoo.com/',
             'https://www.msn.com/',
-            // undefined, // (direct) // matei direto em 05/12/2023
+            undefined, // (direct) // matei direto em 05/12/2023 // voltei dia 19/12/2023, para validar se provoca influência na taxa de engajamento
           ];
 
           const UTMs = [
