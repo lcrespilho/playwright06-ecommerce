@@ -68,6 +68,7 @@ function updateLogs(logs: object) {
             content: `
               window.is_playwright_bot = true; // feeds GA4 custom dimensions (event and user scopes)
               //window.debug_mode = true; // uncomment to enable GA4 DebugView
+              //window.server_container_url = 'https://enunujuwqdhws.x.pipedream.net';
             `,
           });
           page = await context.newPage();
@@ -96,6 +97,13 @@ function updateLogs(logs: object) {
                 });
               logs[stateFile] = (logs[stateFile] || '') + ' ' + events.join(', ');
               updateLogs(logs);
+            }
+          });
+
+          // Faz com que document.hasFocus() seja `true`.
+          page.on('framenavigated', frame => {
+            if (frame === page.mainFrame()) {
+              frame.locator('html').click(); // força foco no documento)
             }
           });
 
