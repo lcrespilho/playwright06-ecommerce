@@ -46,7 +46,7 @@ function updateLogs(logs: object) {
       // 2 navegações concorrentes
       new Array(2).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext;
-        let stateFile = '/tmp/state_' + Math.floor(Math.random() * 2000) + '.json';
+        let stateFile = '/tmp/state_' + Math.floor(Math.random() * 3000) + '.json';
         const SKIP_THRESHOLD = 0.25;
 
         try {
@@ -54,8 +54,8 @@ function updateLogs(logs: object) {
             // se não existe arquivo de estado, cria um novo
             fs.writeFileSync(stateFile, '{}', 'utf8');
           } else {
-            // small probability to reset user state
-            if (Math.random() < 0.05) {
+            // probability to reset user state
+            if (Math.random() < 0.10) {
               fs.writeFileSync(stateFile, '{}', 'utf8');
             }
           }
@@ -67,8 +67,8 @@ function updateLogs(logs: object) {
           await context.addInitScript({
             content: `
               window.is_playwright_bot = true; // feeds GA4 custom dimensions (event and user scopes)
-              //window.debug_mode = true; // uncomment to enable GA4 DebugView
-              //window.server_container_url = 'https://enunujuwqdhws.x.pipedream.net';
+              // window.debug_mode = true; // uncomment to enable GA4 DebugView
+              // window.server_container_url = 'https://enunujuwqdhws.x.pipedream.net'; // https://public.requestbin.com/r/enunujuwqdhws
             `,
           });
           page = await context.newPage();
@@ -80,7 +80,7 @@ function updateLogs(logs: object) {
           page.on('request', async (req: Request) => {
             const url = flatRequestUrl(req);
             // GA4 hit
-            if (url.match(/google.*collect\?v=2/)) {
+            if (url.match(/collect\?v=2/)) {
               let [, _et = ''] = url.match(/en=user_engagement.*?&_et=(\d+)/) || []; // extracts _et parameter, if present
               const events = url
                 .match(/&en=[^&]+/g) // ['&en=event1', '&en=event2', ...]
@@ -145,12 +145,13 @@ function updateLogs(logs: object) {
               waitUntil: 'load',
               referer,
             }),
-            page.waitForRequest(/google.*collect\?v=2/),
+            page.waitForRequest(/collect\?v=2/),
           ]);
-          // at least 10s to simulate engaged session
           // at least 500ms to collect "select_promotion" (deliberately delayed by 500ms on website)
-          await page.waitForTimeout(10000);
+          await page.waitForTimeout(2000);
           if (Math.random() < SKIP_THRESHOLD) return;
+          // at least 10s to simulate engaged session
+          await page.waitForTimeout(16000);
 
           // view_item_list em PDL
           await Promise.all([
