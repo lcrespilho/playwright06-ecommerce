@@ -80,7 +80,7 @@ function updateLogs(logs: object) {
           page.on('request', async (req: Request) => {
             const url = flatRequestUrl(req);
             // GA4 hit
-            if (url.match(/collect\?v=2/)) {
+            if (url.match(/google.*collect\?v=2/)) {
               let [, _et = ''] = url.match(/en=user_engagement.*?&_et=(\d+)/) || []; // extracts _et parameter, if present
               const events = url
                 .match(/&en=[^&]+/g) // ['&en=event1', '&en=event2', ...]
@@ -145,7 +145,7 @@ function updateLogs(logs: object) {
               waitUntil: 'load',
               referer,
             }),
-            page.waitForRequest(/collect\?v=2/),
+            page.waitForRequest(/google.*collect\?v=2/),
           ]);
           // at least 500ms to collect "select_promotion" (deliberately delayed by 500ms on website)
           await page.waitForTimeout(2000);
