@@ -144,7 +144,7 @@ function updateLogs(logs: object) {
           await Promise.all([
             page.goto('https://louren.co.in/ecommerce/home.html' + utm, {
               waitUntil: 'load',
-              referer,
+              referer: (utm.includes('gclid=') && Math.random() < 0.5 && 'https://www.google.com/') || undefined,
             }),
             page.waitForRequest(/google.*collect\?v=2/),
           ])
