@@ -135,6 +135,7 @@ function updateLogs(logs: object) {
           if (Math.random() < 0.5) {
             // UTM
             utm = UTMs[Math.floor(Math.random() * UTMs.length)]
+            referer = (utm.includes('gclid=') && Math.random() < 0.5 && 'https://www.google.com/') || undefined
           } else {
             // referer
             referer = referrals[Math.floor(Math.random() * referrals.length)]
@@ -144,7 +145,7 @@ function updateLogs(logs: object) {
           await Promise.all([
             page.goto('https://louren.co.in/ecommerce/home.html' + utm, {
               waitUntil: 'load',
-              referer: (utm.includes('gclid=') && Math.random() < 0.5 && 'https://www.google.com/') || undefined,
+              referer,
             }),
             page.waitForRequest(/google.*collect\?v=2/),
           ])
