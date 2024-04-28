@@ -19,8 +19,9 @@ jobs:
         run: |
           ssh lourenco@louren.co.in << EOF
             cd ~/GitRepos/playwright06-ecommerce
-            git pull
-            npm install
-            pm2 restart ecommerce
-            pm2 ls
+            echo oi > oi.txt
+            # git pull
+            # npm install
+            # pm2 restart ecommerce
+            # pm2 ls
           EOF
