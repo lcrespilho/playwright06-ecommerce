@@ -17,7 +17,7 @@ jobs:
           echo "Host louren.co.in\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null" > ~/.ssh/config
       - name: Deploy
         run: |
-          ssh lourenco@louren.co.in <<< EOF
+          ssh lourenco@louren.co.in << EOF
             cd ~/GitRepos/playwright06-ecommerce
             git pull
             npm install
