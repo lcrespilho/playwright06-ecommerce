@@ -1,0 +1,26 @@
+name: Deploy on Digital Ocean
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY_LOUREN_CO_IN }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          echo "Host louren.co.in\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null" > ~/.ssh/config
+      - name: Deploy
+        run: |
+          ssh lourenco@louren.co.in <<< EOF
+            cd ~/GitRepos/playwright06-ecommerce
+            git pull
+            npm install
+            pm2 restart ecommerce
+            pm2 ls
+          EOF
