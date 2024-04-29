@@ -17,10 +17,10 @@ jobs:
           chmod 600 ~/.ssh/id_ed25519
       - name: Deploy
         run: |
-          # ssh -T -o StrictHostKeyChecking=no lourenco@35.222.84.1 << EOF
           ssh -T lourenco@35.222.84.1 << EOF
             cd ~/GitRepos/playwright06-ecommerce
             git pull
             npm install
+            npx playwright install
             pm2 restart ecommerce
           EOF
