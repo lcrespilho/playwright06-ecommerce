@@ -46,7 +46,7 @@ function updateLogs(logs: object) {
       // 2 navegações concorrentes
       new Array(2).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext
-        let stateFile = '/tmp/state_' + Math.floor(Math.random() * 3000) + '.json'
+        let stateFile = '/tmp/state_' + Math.floor(Math.random() * 5000) + '.json'
         const SKIP_THRESHOLD = 0.25
 
         try {
@@ -55,7 +55,7 @@ function updateLogs(logs: object) {
             fs.writeFileSync(stateFile, '{}', 'utf8')
           } else {
             // probability to reset user state
-            if (Math.random() < 0.1) {
+            if (Math.random() < 0.08) {
               fs.writeFileSync(stateFile, '{}', 'utf8')
             }
           }
@@ -111,21 +111,13 @@ function updateLogs(logs: object) {
             'https://www.google.com/',
             'https://www.facebook.com/',
             'https://www.bing.com/',
-            'https://br.yahoo.com/',
-            'https://www.msn.com/',
-            undefined, // (direct) // matei direto em 05/12/2023 // voltei dia 19/12/2023, para validar se provoca influência na taxa de engajamento
+            undefined, // (direct)
           ]
 
           const UTMs = [
-            '?utm_source=google&utm_medium=cpc&utm_campaign=google-cpc-campaign&utm_id=google-cpc-id&utm_term=google-cpc-term&utm_content=google-cpc-content&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=testing',
             '?gclid=gclidAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
             '?gclid=gclidBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB&utm_source=google-gclid&utm_medium=cpc-gclid&utm_campaign=google-cpc-campaign-gclid&utm_id=google-cpc-id-gclid&utm_term=google-cpc-term-gclid&utm_content=google-cpc-content-gclid&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=testing',
             '?utm_source=facebook&utm_medium=cpc&utm_campaign=facebook-cpc-campaign&utm_id=facebook-cpc-id&utm_term=facebook-cpc-term&utm_content=facebook-cpc-content&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=testing',
-            '?utm_source=bing&utm_medium=cpc&utm_campaign=bing-cpc-campaign&utm_id=bing-cpc-id&utm_term=bing-cpc-term&utm_content=bing-cpc-content&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=testing',
-            '?utm_source=yahoo&utm_medium=cpc&utm_campaign=yahoo-cpc-campaign&utm_id=yahoo-cpc-id&utm_term=yahoo-cpc-term&utm_content=yahoo-cpc-content&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=testing',
-            '?utm_source=msn&utm_medium=cpc&utm_campaign=msn-cpc-campaign&utm_id=msn-cpc-id&utm_term=msn-cpc-term&utm_content=msn-cpc-content&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=testing',
-            '?utm_source=newsletter&utm_medium=email&utm_campaign=newsletter-email-campaign&utm_id=newsletter-email-id&utm_term=newsletter-email-term&utm_content=newsletter-email-content&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=testing',
-            '?utm_source=myaffiliate&utm_medium=affiliate&utm_campaign=myaffiliate-affiliate-campaign&utm_id=myaffiliate-affiliate-id&utm_term=myaffiliate-affiliate-term&utm_content=myaffiliate-affiliate-content&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=testing',
             '?utm_source=mysource&utm_medium=display&utm_campaign=mysource-display-campaign&utm_id=mysource-display-id&utm_term=mysource-display-term&utm_content=mysource-display-content&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=testing',
           ]
 
@@ -147,7 +139,7 @@ function updateLogs(logs: object) {
               waitUntil: 'load',
               referer,
             }),
-            page.waitForRequest(/google.*collect\?v=2/),
+            page.waitForResponse(/google.*collect\?v=2/),
           ])
           // at least 500ms to collect "select_promotion" (deliberately delayed by 500ms on website)
           await page.waitForTimeout(2000)
