@@ -20,12 +20,11 @@ jobs:
             User lourenco
             StrictHostKeyChecking no
           EOF
-          # echo "Host 35.222.84.1\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null" > ~/.ssh/config
           cat ~/.ssh/config
-          # cat ~/.ssh/id_ed25519
+          cat ~/.ssh/id_ed25519
       - name: Deploy
         run: |
-          ssh -T -o StrictHostKeyChecking=no -i ~/.ssh/id_ed25519 lourenco@35.222.84.1 << EOF
+          ssh -T -i ~/.ssh/id_ed25519 lourenco@35.222.84.1 << EOF
             cd ~/GitRepos/playwright06-ecommerce
             echo oi > oi.txt
             git pull
