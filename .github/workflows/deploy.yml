@@ -17,7 +17,7 @@ jobs:
           echo "Host louren.co.in\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile=/dev/null" > ~/.ssh/config
       - name: Deploy
         run: |
-          ssh lourenco@35.222.84.1 << EOF
+          ssh -T -i ~/ssh/id_ed25519 lourenco@35.222.84.1 << EOF
             cd ~/GitRepos/playwright06-ecommerce
             echo oi > oi.txt
             git pull
