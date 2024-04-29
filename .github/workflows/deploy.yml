@@ -13,10 +13,12 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY_LOUREN_CO_IN }}" > ~/.ssh/id_ed25519
+          echo "35.222.84.1 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICArDzAYhoe4WRAsbNAE4Y1FcrtILg3U2eNFnuDTpIze" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_ed25519
       - name: Deploy
         run: |
-          ssh -T -o StrictHostKeyChecking=no lourenco@35.222.84.1 << EOF
+          # ssh -T -o StrictHostKeyChecking=no lourenco@35.222.84.1 << EOF
+          ssh -T lourenco@35.222.84.1 << EOF
             cd ~/GitRepos/playwright06-ecommerce
             git pull
             npm install
