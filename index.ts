@@ -27,13 +27,13 @@ function updateLogs(logs: object) {
     console.log(`[${key}]: ${value}`)
   }
 }
-
+// comentário qualquer
 ;(async () => {
   const browser = await chromium.launch({
     headless: process.env.HEADLESS !== 'false',
     devtools: process.env.DEVTOOLS === 'true',
   })
-
+//asdfasdfasdf
   let logs = {}
   while (true) {
     logs = Object.fromEntries(Object.entries(logs).slice(-30)) // limit `logs` size
