@@ -79,6 +79,16 @@ function updateLogs(logs: object) {
               },
             ])
           }
+          // Cria cookie "variant" com valor "1", para ser utilizado em futuros testes
+          await context.addCookies([
+            {
+              name: 'variant',
+              value: '1',
+              domain: '.louren.co.in',
+              path: '/',
+              expires: Date.now() / 1000 + 1 * 365 * 24 * 60 * 60, // 1 ano
+            },
+          ])
 
           await context.addInitScript({
             content: `
