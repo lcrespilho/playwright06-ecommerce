@@ -45,8 +45,8 @@ function updateLogs(logs: object) {
     for (const context of contexts) await context.close()
 
     await Promise.allSettled(
-      // 3 navegações concorrentes
-      new Array(3).fill(3).map(async (_, idx) => {
+      // 2 navegações concorrentes
+      new Array(2).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext
         let stateFile = 'states/state_' + Math.floor(Math.random() * 5000) + '.json'
         const SKIP_THRESHOLD = 0.25
