@@ -2,6 +2,8 @@ import { chromium, devices } from 'playwright'
 import type { Page, BrowserContext, Request } from 'playwright'
 import c from 'ansi-colors'
 import fs from 'fs'
+import { fakerPT_BR as faker } from '@faker-js/faker'
+
 /**
  * Returns a flattened request URL by combining the URL and postData parameters
  * of the given Request object.
@@ -43,20 +45,21 @@ function updateLogs(logs: object) {
     for (const context of contexts) await context.close()
 
     await Promise.allSettled(
-      // 2 navegações concorrentes
-      new Array(2).fill(3).map(async (_, idx) => {
+      // 3 navegações concorrentes
+      new Array(3).fill(3).map(async (_, idx) => {
         let page: Page, context: BrowserContext
-        let stateFile = '/tmp/state_' + Math.floor(Math.random() * 5000) + '.json'
+        let stateFile = 'states/state_' + Math.floor(Math.random() * 5000) + '.json'
         const SKIP_THRESHOLD = 0.25
 
         try {
+          if (!fs.existsSync('states')) fs.mkdirSync('states')
           if (!fs.existsSync(stateFile)) {
             // se não existe arquivo de estado, cria um novo
             fs.writeFileSync(stateFile, '{}', 'utf8')
           } else {
             // probability to reset user state
-            if (Math.random() < 0.08) {
-              fs.writeFileSync(stateFile, '{}', 'utf8')
+            if (Math.random() < 0.05) {
+              // fs.writeFileSync(stateFile, '{}', 'utf8') // TODO: descomentar no futuro para permitir/testar churn
             }
           }
           context = await browser.newContext({
@@ -64,6 +67,19 @@ function updateLogs(logs: object) {
             viewport: null,
             ...devices['Nexus 10'],
           })
+          // Cria o cookie "email" em https://louren.co.in se ele ainda não existir
+          if (!(await context.cookies('https://louren.co.in')).find(c => c.name === 'email')) {
+            await context.addCookies([
+              {
+                name: 'email',
+                value: (faker.person.firstName().replace(' ', '.') + '@gmail.com').toLowerCase(),
+                domain: '.louren.co.in',
+                path: '/',
+                expires: Date.now() / 1000 + 1 * 365 * 24 * 60 * 60, // 1 ano
+              },
+            ])
+          }
+
           await context.addInitScript({
             content: `
               window.is_playwright_bot = true; // feeds GA4 custom dimensions (event and user scopes)
@@ -80,7 +96,7 @@ function updateLogs(logs: object) {
           page.on('request', async (req: Request) => {
             const url = flatRequestUrl(req)
             // GA4 hit
-            if (url.match(/google.*collect\?v=2/)) {
+            if (url.match(/google.*collect\?v=2.*G-8EEVZD2KXM/)) {
               let [, _et = ''] = url.match(/en=user_engagement.*?&_et=(\d+)/) || [] // extracts _et parameter, if present
               const events = url
                 .match(/&en=[^&]+/g) // ['&en=event1', '&en=event2', ...]
@@ -132,6 +148,13 @@ function updateLogs(logs: object) {
             // referer
             referer = referrals[Math.floor(Math.random() * referrals.length)]
           }
+
+          // Closes Cookiebot banner.
+          await page.addLocatorHandler(
+            page.locator('#CybotCookiebotDialog'),
+            async () =>
+              await page.getByRole('button', { name: Math.random() <= 1.0 ? 'Permitir todos' : 'Negar' }).click() // TODO: mudar para 50% no futuro
+          )
 
           // 2 view_promotion events
           await Promise.all([
