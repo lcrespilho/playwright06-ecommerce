@@ -35,8 +35,8 @@ function updateLogs(logs: object) {
     for (const context of contexts) await context.close()
 
     await Promise.allSettled(
-      // Navegações concorrentes
-      new Array(3).fill(3).map(async (_, idx) => {
+      // Navegações concorrentes: precisa ser no máximo 2 na instância free tier do Google.
+      new Array(2).fill(3).map(async (_, idx) => {
         const context: BrowserContext = await browser.newContext({
           ...devices['Nexus 10'],
         })
