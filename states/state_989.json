@@ -1,0 +1,177 @@
+{
+  "cookies": [
+    {
+      "name": "email",
+      "value": "breno@gmail.com",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746321715.998,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "variant",
+      "value": "1",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746321715.999,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "uid",
+      "value": "a6rt52Y1jbSMRHpzAy5SAg==",
+      "domain": "louren.co.in",
+      "path": "/",
+      "expires": 1749345716.656879,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AMP_MKTG_de9b96cde3",
+      "value": "JTdCJTIydXRtX2NhbXBhaWduJTIyJTNBJTIybXlzb3VyY2UtZGlzcGxheS1jYW1wYWlnbiUyMiUyQyUyMnV0bV9jb250ZW50JTIyJTNBJTIybXlzb3VyY2UtZGlzcGxheS1jb250ZW50JTIyJTJDJTIydXRtX2lkJTIyJTNBJTIybXlzb3VyY2UtZGlzcGxheS1pZCUyMiUyQyUyMnV0bV9tZWRpdW0lMjIlM0ElMjJkaXNwbGF5JTIyJTJDJTIydXRtX3NvdXJjZSUyMiUzQSUyMm15c291cmNlJTIyJTJDJTIydXRtX3Rlcm0lMjIlM0ElMjJteXNvdXJjZS1kaXNwbGF5LXRlcm0lMjIlN0Q=",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746321716,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AMP_de9b96cde3",
+      "value": "JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjJkMzAxYTAzNC05ZGZlLTQyMDYtODM2OS1jMDY2OTlmMTcwN2QlMjIlMkMlMjJ1c2VySWQlMjIlM0ElMjJhNnJ0NTJZMWpiU01SSHB6QXk1U0FnJTNEJTNEJTIyJTJDJTIyc2Vzc2lvbklkJTIyJTNBMTcxNDc4NTcxNjk1MSUyQyUyMm9wdE91dCUyMiUzQWZhbHNlJTJDJTIybGFzdEV2ZW50VGltZSUyMiUzQTE3MTQ3ODU3MTY5NjclMkMlMjJsYXN0RXZlbnRJZCUyMiUzQTIlN0Q=",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746321716,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "CLID",
+      "value": "cd0fdecd5238490eb0086fd11c17c1d2.20240504.20250504",
+      "domain": "www.clarity.ms",
+      "path": "/",
+      "expires": 1746321717.069321,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_clck",
+      "value": "4qicjz%7C2%7Cflh%7C0%7C1585",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746321717,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "MUID",
+      "value": "27BCAA3D278F67771907BE48265266C8",
+      "domain": ".bing.com",
+      "path": "/",
+      "expires": 1748481717.719541,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MR",
+      "value": "0",
+      "domain": ".c.bing.com",
+      "path": "/",
+      "expires": 1715390517.71959,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "SRM_B",
+      "value": "27BCAA3D278F67771907BE48265266C8",
+      "domain": ".c.bing.com",
+      "path": "/",
+      "expires": 1748481717.719613,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "SM",
+      "value": "C",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MUID",
+      "value": "27BCAA3D278F67771907BE48265266C8",
+      "domain": ".clarity.ms",
+      "path": "/",
+      "expires": 1748481717.844022,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MR",
+      "value": "0",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": 1715390517.844065,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ANONCHK",
+      "value": "0",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": 1714786317.844095,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_clsk",
+      "value": "1wivhw5%7C1714785717949%7C1%7C1%7Cr.clarity.ms%2Fcollect",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1714872117,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://louren.co.in",
+      "localStorage": [
+        {
+          "name": "AMP_unsent_de9b96cde3",
+          "value": "[]"
+        },
+        {
+          "name": "mp_6241f8e1d9900947ba9bfb8deb1f7bce_mixpanel",
+          "value": "{\"distinct_id\": \"a6rt52Y1jbSMRHpzAy5SAg==\",\"$device_id\": \"18f41318ae1389-0a01eab9599ede-6419164d-fa000-18f41318ae1389\",\"utm_source\": \"mysource\",\"utm_medium\": \"display\",\"utm_campaign\": \"mysource-display-campaign\",\"utm_content\": \"mysource-display-content\",\"utm_term\": \"mysource-display-term\",\"$initial_referrer\": \"$direct\",\"$initial_referring_domain\": \"$direct\",\"__mps\": {},\"__mpso\": {},\"__mpus\": {},\"__mpa\": {},\"__mpu\": {},\"__mpr\": [],\"__mpap\": [],\"$user_id\": \"a6rt52Y1jbSMRHpzAy5SAg==\"}"
+        },
+        {
+          "name": "__mpq_6241f8e1d9900947ba9bfb8deb1f7bce_pp",
+          "value": "[{\"id\":\"v3gc7326jx9pijyu\",\"flushAfter\":1714785726965,\"payload\":{\"$set_once\":{\"initial_utm_source\":\"mysource\",\"initial_utm_medium\":\"display\",\"initial_utm_campaign\":\"mysource-display-campaign\",\"initial_utm_content\":\"mysource-display-content\",\"initial_utm_term\":\"mysource-display-term\"},\"$token\":\"6241f8e1d9900947ba9bfb8deb1f7bce\",\"$distinct_id\":\"a6rt52Y1jbSMRHpzAy5SAg==\",\"$device_id\":\"18f41318ae1389-0a01eab9599ede-6419164d-fa000-18f41318ae1389\",\"$user_id\":\"a6rt52Y1jbSMRHpzAy5SAg==\"}},{\"id\":\"o5yxhz7ipa4zg97h\",\"flushAfter\":1714785726966,\"payload\":{\"$set_once\":{\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\"},\"$token\":\"6241f8e1d9900947ba9bfb8deb1f7bce\",\"$distinct_id\":\"a6rt52Y1jbSMRHpzAy5SAg==\",\"$device_id\":\"18f41318ae1389-0a01eab9599ede-6419164d-fa000-18f41318ae1389\",\"$user_id\":\"a6rt52Y1jbSMRHpzAy5SAg==\"}}]"
+        },
+        {
+          "name": "__mpq_6241f8e1d9900947ba9bfb8deb1f7bce_ev",
+          "value": "[{\"id\":\"561zt03leaqz1g7e\",\"flushAfter\":1714785726963,\"payload\":{\"event\":\"$mp_web_page_view\",\"properties\":{\"$os\":\"Android\",\"$browser\":\"Chrome\",\"$device\":\"Android\",\"$current_url\":\"https://louren.co.in/ecommerce/home.html?utm_source=mysource&utm_medium=display&utm_campaign=mysource-display-campaign&utm_id=mysource-display-id&utm_term=mysource-display-term&utm_content=mysource-display-content&utm_source_platform=playwright006&utm_cre\",\"$browser_version\":124,\"$screen_height\":1280,\"$screen_width\":800,\"mp_lib\":\"web\",\"$lib_version\":\"2.50.0\",\"$insert_id\":\"a3c3g4ppbueyn72u\",\"time\":1714785716.963,\"utm_source\":\"mysource\",\"utm_medium\":\"display\",\"utm_campaign\":\"mysource-display-campaign\",\"utm_content\":\"mysource-display-content\",\"utm_term\":\"mysource-display-term\",\"distinct_id\":\"$device:18f41318ae1389-0a01eab9599ede-6419164d-fa000-18f41318ae1389\",\"$device_id\":\"18f41318ae1389-0a01eab9599ede-6419164d-fa000-18f41318ae1389\",\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\",\"current_page_title\":\"Ecommerce - Home\",\"current_domain\":\"louren.co.in\",\"current_url_path\":\"/ecommerce/home.html\",\"current_url_protocol\":\"https:\",\"current_url_search\":\"?utm_source=mysource&utm_medium=display&utm_campaign=mysource-display-campaign&utm_id=mysource-display-id&utm_term=mysource-display-term&utm_content=mysource-display-content&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=t\",\"token\":\"6241f8e1d9900947ba9bfb8deb1f7bce\",\"mp_sent_by_lib_version\":\"2.50.0\"}}},{\"id\":\"7x09tyvo2uupgmtx\",\"flushAfter\":1714785726966,\"payload\":{\"event\":\"$identify\",\"properties\":{\"$os\":\"Android\",\"$browser\":\"Chrome\",\"$device\":\"Android\",\"$current_url\":\"https://louren.co.in/ecommerce/home.html?utm_source=mysource&utm_medium=display&utm_campaign=mysource-display-campaign&utm_id=mysource-display-id&utm_term=mysource-display-term&utm_content=mysource-display-content&utm_source_platform=playwright006&utm_cre\",\"$browser_version\":124,\"$screen_height\":1280,\"$screen_width\":800,\"mp_lib\":\"web\",\"$lib_version\":\"2.50.0\",\"$insert_id\":\"nq4v068wpby0pns4\",\"time\":1714785716.966,\"utm_source\":\"mysource\",\"utm_medium\":\"display\",\"utm_campaign\":\"mysource-display-campaign\",\"utm_content\":\"mysource-display-content\",\"utm_term\":\"mysource-display-term\",\"distinct_id\":\"a6rt52Y1jbSMRHpzAy5SAg==\",\"$device_id\":\"18f41318ae1389-0a01eab9599ede-6419164d-fa000-18f41318ae1389\",\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\",\"$user_id\":\"a6rt52Y1jbSMRHpzAy5SAg==\",\"$anon_distinct_id\":\"$device:18f41318ae1389-0a01eab9599ede-6419164d-fa000-18f41318ae1389\",\"token\":\"6241f8e1d9900947ba9bfb8deb1f7bce\",\"mp_sent_by_lib_version\":\"2.50.0\"}}}]"
+        }
+      ]
+    }
+  ]
+}

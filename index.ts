@@ -160,11 +160,10 @@ function updateLogs(logs: object) {
           }
 
           // Closes Cookiebot banner.
-          await page.addLocatorHandler(
-            page.locator('#CybotCookiebotDialog'),
-            async () =>
-              await page.getByRole('button', { name: Math.random() <= 1.0 ? 'Permitir todos' : 'Negar' }).click() // TODO: mudar para 50% no futuro
-          )
+          await page.addLocatorHandler(page.locator('#CybotCookiebotDialog'), async () => {
+            await page.getByRole('button', { name: Math.random() <= 1.0 ? 'Permitir todos' : 'Negar' }).click() // TODO: mudar para 50% no futuro
+            await page.waitForTimeout(1000)
+          })
 
           // 2 view_promotion events
           await Promise.all([

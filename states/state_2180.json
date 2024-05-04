@@ -1,0 +1,217 @@
+{
+  "cookies": [
+    {
+      "name": "email",
+      "value": "miguel@gmail.com",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746323595.899,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "variant",
+      "value": "1",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746323595.9,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "uid",
+      "value": "a6rt52Y1lQyMRHpzAy9RAg==",
+      "domain": "louren.co.in",
+      "path": "/",
+      "expires": 1749347596.572607,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AMP_MKTG_de9b96cde3",
+      "value": "JTdCJTIydXRtX2NhbXBhaWduJTIyJTNBJTIyZmFjZWJvb2stY3BjLWNhbXBhaWduJTIyJTJDJTIydXRtX2NvbnRlbnQlMjIlM0ElMjJmYWNlYm9vay1jcGMtY29udGVudCUyMiUyQyUyMnV0bV9pZCUyMiUzQSUyMmZhY2Vib29rLWNwYy1pZCUyMiUyQyUyMnV0bV9tZWRpdW0lMjIlM0ElMjJjcGMlMjIlMkMlMjJ1dG1fc291cmNlJTIyJTNBJTIyZmFjZWJvb2slMjIlMkMlMjJ1dG1fdGVybSUyMiUzQSUyMmZhY2Vib29rLWNwYy10ZXJtJTIyJTdE",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746323596,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "CLID",
+      "value": "78b3402ee87c4ebd9a276764fb4f2a58.20240504.20250504",
+      "domain": "www.clarity.ms",
+      "path": "/",
+      "expires": 1746323597.213499,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_clck",
+      "value": "1gztx4c%7C2%7Cflh%7C0%7C1585",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746323597,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "MUID",
+      "value": "1CB72BDE1D8C656729133FAB1C7764D7",
+      "domain": ".bing.com",
+      "path": "/",
+      "expires": 1748483597.814697,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MR",
+      "value": "0",
+      "domain": ".c.bing.com",
+      "path": "/",
+      "expires": 1715392397.814742,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "SRM_B",
+      "value": "1CB72BDE1D8C656729133FAB1C7764D7",
+      "domain": ".c.bing.com",
+      "path": "/",
+      "expires": 1748483597.81477,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "SM",
+      "value": "C",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MUID",
+      "value": "1CB72BDE1D8C656729133FAB1C7764D7",
+      "domain": ".clarity.ms",
+      "path": "/",
+      "expires": 1748483598.938778,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MR",
+      "value": "0",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": 1715392398.93882,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ANONCHK",
+      "value": "0",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": 1714788198.938847,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "CookieConsent",
+      "value": "{stamp:%277M4UQTrP47nTFhbbsSc2kajFkTbkBmvr461OdMFFZn0n0P6zRjLVVQ==%27%2Cnecessary:true%2Cpreferences:true%2Cstatistics:true%2Cmarketing:true%2Cmethod:%27explicit%27%2Cver:1%2Cutc:1714787615960%2Cregion:%27br%27}",
+      "domain": "louren.co.in",
+      "path": "/",
+      "expires": 1746323615,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga",
+      "value": "GA1.1.987721340.1714787597",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1749347615.825423,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AMP_de9b96cde3",
+      "value": "JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjIwMGE2YTNhYy1lNDRhLTRhMGEtOTBiMS02ZTRhNDMyNTlmMGQlMjIlMkMlMjJ1c2VySWQlMjIlM0ElMjJhNnJ0NTJZMWxReU1SSHB6QXk5UkFnJTNEJTNEJTIyJTJDJTIyc2Vzc2lvbklkJTIyJTNBMTcxNDc4NzU5Njg4NyUyQyUyMm9wdE91dCUyMiUzQWZhbHNlJTJDJTIybGFzdEV2ZW50VGltZSUyMiUzQTE3MTQ3ODc2MjQxODglMkMlMjJsYXN0RXZlbnRJZCUyMiUzQTUlN0Q=",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746323624,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_8EEVZD2KXM",
+      "value": "GS1.1.1714787596.1.1.1714787624.51.0.0",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1749347624.193152,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_ga_4Z970YCHQZ",
+      "value": "GS1.1.1714787596.1.1.1714787624.51.0.2102145642",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1749347624.197697,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "_clsk",
+      "value": "e41hqd%7C1714787624479%7C3%7C1%7Cr.clarity.ms%2Fcollect",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1714874024,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://louren.co.in",
+      "localStorage": [
+        {
+          "name": "AMP_unsent_de9b96cde3",
+          "value": "[]"
+        },
+        {
+          "name": "mp_6241f8e1d9900947ba9bfb8deb1f7bce_mixpanel",
+          "value": "{\"distinct_id\": \"a6rt52Y1lQyMRHpzAy9RAg==\",\"$device_id\": \"18f414e3a6938a-08425fe15e282c-6419164d-fa000-18f414e3a6938a\",\"utm_source\": \"facebook\",\"utm_medium\": \"cpc\",\"utm_campaign\": \"facebook-cpc-campaign\",\"utm_content\": \"facebook-cpc-content\",\"utm_term\": \"facebook-cpc-term\",\"$initial_referrer\": \"$direct\",\"$initial_referring_domain\": \"$direct\",\"__mps\": {},\"__mpso\": {},\"__mpus\": {},\"__mpa\": {},\"__mpu\": {},\"__mpr\": [],\"__mpap\": [],\"$user_id\": \"a6rt52Y1lQyMRHpzAy9RAg==\"}"
+        },
+        {
+          "name": "__mpq_6241f8e1d9900947ba9bfb8deb1f7bce_pp",
+          "value": "[]"
+        },
+        {
+          "name": "__mpq_6241f8e1d9900947ba9bfb8deb1f7bce_ev",
+          "value": "[]"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,177 @@
+{
+  "cookies": [
+    {
+      "name": "email",
+      "value": "mariana@gmail.com",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746321268.784,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "variant",
+      "value": "1",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746321268.784,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "uid",
+      "value": "a6rt52Y1i/WMRHpzAy41Ag==",
+      "domain": "louren.co.in",
+      "path": "/",
+      "expires": 1749345269.417379,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AMP_MKTG_de9b96cde3",
+      "value": "JTdCJTIydXRtX2NhbXBhaWduJTIyJTNBJTIyZmFjZWJvb2stY3BjLWNhbXBhaWduJTIyJTJDJTIydXRtX2NvbnRlbnQlMjIlM0ElMjJmYWNlYm9vay1jcGMtY29udGVudCUyMiUyQyUyMnV0bV9pZCUyMiUzQSUyMmZhY2Vib29rLWNwYy1pZCUyMiUyQyUyMnV0bV9tZWRpdW0lMjIlM0ElMjJjcGMlMjIlMkMlMjJ1dG1fc291cmNlJTIyJTNBJTIyZmFjZWJvb2slMjIlMkMlMjJ1dG1fdGVybSUyMiUzQSUyMmZhY2Vib29rLWNwYy10ZXJtJTIyJTdE",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746321269,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "AMP_de9b96cde3",
+      "value": "JTdCJTIyZGV2aWNlSWQlMjIlM0ElMjJhM2M4MzljMy01NThmLTRjYTgtOGM0NC1hNGU4Njc0ZjQ2ZDAlMjIlMkMlMjJ1c2VySWQlMjIlM0ElMjJhNnJ0NTJZMWklMkZXTVJIcHpBeTQxQWclM0QlM0QlMjIlMkMlMjJzZXNzaW9uSWQlMjIlM0ExNzE0Nzg1MjY5NzQwJTJDJTIyb3B0T3V0JTIyJTNBZmFsc2UlMkMlMjJsYXN0RXZlbnRUaW1lJTIyJTNBMTcxNDc4NTI2OTc0MyUyQyUyMmxhc3RFdmVudElkJTIyJTNBMiU3RA==",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746321269,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "CLID",
+      "value": "e2bf7ea316d443d7806624fea1c8e555.20240504.20250504",
+      "domain": "www.clarity.ms",
+      "path": "/",
+      "expires": 1746321269.947785,
+      "httpOnly": true,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_clck",
+      "value": "166pvhv%7C2%7Cflh%7C0%7C1585",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1746321269,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "MUID",
+      "value": "3AD9E6974C536ACA3BA1F2E24DA86BA8",
+      "domain": ".bing.com",
+      "path": "/",
+      "expires": 1748481270.584486,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MR",
+      "value": "0",
+      "domain": ".c.bing.com",
+      "path": "/",
+      "expires": 1715390070.584523,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "SRM_B",
+      "value": "3AD9E6974C536ACA3BA1F2E24DA86BA8",
+      "domain": ".c.bing.com",
+      "path": "/",
+      "expires": 1748481270.58455,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "SM",
+      "value": "C",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MUID",
+      "value": "3AD9E6974C536ACA3BA1F2E24DA86BA8",
+      "domain": ".clarity.ms",
+      "path": "/",
+      "expires": 1748481270.715098,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "MR",
+      "value": "0",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": 1715390070.715168,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "ANONCHK",
+      "value": "0",
+      "domain": ".c.clarity.ms",
+      "path": "/",
+      "expires": 1714785870.71521,
+      "httpOnly": false,
+      "secure": true,
+      "sameSite": "None"
+    },
+    {
+      "name": "_clsk",
+      "value": "1b739r8%7C1714785270791%7C1%7C1%7Cr.clarity.ms%2Fcollect",
+      "domain": ".louren.co.in",
+      "path": "/",
+      "expires": 1714871670,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "https://louren.co.in",
+      "localStorage": [
+        {
+          "name": "AMP_unsent_de9b96cde3",
+          "value": "[]"
+        },
+        {
+          "name": "mp_6241f8e1d9900947ba9bfb8deb1f7bce_mixpanel",
+          "value": "{\"distinct_id\": \"a6rt52Y1i/WMRHpzAy41Ag==\",\"$device_id\": \"18f412ab7d1365-04936cfc96a202-6419164d-fa000-18f412ab7d1365\",\"utm_source\": \"facebook\",\"utm_medium\": \"cpc\",\"utm_campaign\": \"facebook-cpc-campaign\",\"utm_content\": \"facebook-cpc-content\",\"utm_term\": \"facebook-cpc-term\",\"$initial_referrer\": \"$direct\",\"$initial_referring_domain\": \"$direct\",\"__mps\": {},\"__mpso\": {},\"__mpus\": {},\"__mpa\": {},\"__mpu\": {},\"__mpr\": [],\"__mpap\": [],\"$user_id\": \"a6rt52Y1i/WMRHpzAy41Ag==\"}"
+        },
+        {
+          "name": "__mpq_6241f8e1d9900947ba9bfb8deb1f7bce_pp",
+          "value": "[{\"id\":\"nsn2dv60jvnkbtjp\",\"flushAfter\":1714785279717,\"payload\":{\"$set_once\":{\"initial_utm_source\":\"facebook\",\"initial_utm_medium\":\"cpc\",\"initial_utm_campaign\":\"facebook-cpc-campaign\",\"initial_utm_content\":\"facebook-cpc-content\",\"initial_utm_term\":\"facebook-cpc-term\"},\"$token\":\"6241f8e1d9900947ba9bfb8deb1f7bce\",\"$distinct_id\":\"a6rt52Y1i/WMRHpzAy41Ag==\",\"$device_id\":\"18f412ab7d1365-04936cfc96a202-6419164d-fa000-18f412ab7d1365\",\"$user_id\":\"a6rt52Y1i/WMRHpzAy41Ag==\"}},{\"id\":\"uoqbwey863n1306k\",\"flushAfter\":1714785279718,\"payload\":{\"$set_once\":{\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\"},\"$token\":\"6241f8e1d9900947ba9bfb8deb1f7bce\",\"$distinct_id\":\"a6rt52Y1i/WMRHpzAy41Ag==\",\"$device_id\":\"18f412ab7d1365-04936cfc96a202-6419164d-fa000-18f412ab7d1365\",\"$user_id\":\"a6rt52Y1i/WMRHpzAy41Ag==\"}}]"
+        },
+        {
+          "name": "__mpq_6241f8e1d9900947ba9bfb8deb1f7bce_ev",
+          "value": "[{\"id\":\"ilegdemcxw0c4g1k\",\"flushAfter\":1714785279715,\"payload\":{\"event\":\"$mp_web_page_view\",\"properties\":{\"$os\":\"Android\",\"$browser\":\"Chrome\",\"$device\":\"Android\",\"$current_url\":\"https://louren.co.in/ecommerce/home.html?utm_source=facebook&utm_medium=cpc&utm_campaign=facebook-cpc-campaign&utm_id=facebook-cpc-id&utm_term=facebook-cpc-term&utm_content=facebook-cpc-content&utm_source_platform=playwright006&utm_creative_format=none&ut\",\"$browser_version\":124,\"$screen_height\":1280,\"$screen_width\":800,\"mp_lib\":\"web\",\"$lib_version\":\"2.50.0\",\"$insert_id\":\"igzm98j7ghqi8as3\",\"time\":1714785269.715,\"utm_source\":\"facebook\",\"utm_medium\":\"cpc\",\"utm_campaign\":\"facebook-cpc-campaign\",\"utm_content\":\"facebook-cpc-content\",\"utm_term\":\"facebook-cpc-term\",\"distinct_id\":\"$device:18f412ab7d1365-04936cfc96a202-6419164d-fa000-18f412ab7d1365\",\"$device_id\":\"18f412ab7d1365-04936cfc96a202-6419164d-fa000-18f412ab7d1365\",\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\",\"current_page_title\":\"Ecommerce - Home\",\"current_domain\":\"louren.co.in\",\"current_url_path\":\"/ecommerce/home.html\",\"current_url_protocol\":\"https:\",\"current_url_search\":\"?utm_source=facebook&utm_medium=cpc&utm_campaign=facebook-cpc-campaign&utm_id=facebook-cpc-id&utm_term=facebook-cpc-term&utm_content=facebook-cpc-content&utm_source_platform=playwright006&utm_creative_format=none&utm_marketing_tactic=testing\",\"token\":\"6241f8e1d9900947ba9bfb8deb1f7bce\",\"mp_sent_by_lib_version\":\"2.50.0\"}}},{\"id\":\"iozj70qrksvsvbtm\",\"flushAfter\":1714785279717,\"payload\":{\"event\":\"$identify\",\"properties\":{\"$os\":\"Android\",\"$browser\":\"Chrome\",\"$device\":\"Android\",\"$current_url\":\"https://louren.co.in/ecommerce/home.html?utm_source=facebook&utm_medium=cpc&utm_campaign=facebook-cpc-campaign&utm_id=facebook-cpc-id&utm_term=facebook-cpc-term&utm_content=facebook-cpc-content&utm_source_platform=playwright006&utm_creative_format=none&ut\",\"$browser_version\":124,\"$screen_height\":1280,\"$screen_width\":800,\"mp_lib\":\"web\",\"$lib_version\":\"2.50.0\",\"$insert_id\":\"t29tujga2d9aize2\",\"time\":1714785269.717,\"utm_source\":\"facebook\",\"utm_medium\":\"cpc\",\"utm_campaign\":\"facebook-cpc-campaign\",\"utm_content\":\"facebook-cpc-content\",\"utm_term\":\"facebook-cpc-term\",\"distinct_id\":\"a6rt52Y1i/WMRHpzAy41Ag==\",\"$device_id\":\"18f412ab7d1365-04936cfc96a202-6419164d-fa000-18f412ab7d1365\",\"$initial_referrer\":\"$direct\",\"$initial_referring_domain\":\"$direct\",\"$user_id\":\"a6rt52Y1i/WMRHpzAy41Ag==\",\"$anon_distinct_id\":\"$device:18f412ab7d1365-04936cfc96a202-6419164d-fa000-18f412ab7d1365\",\"token\":\"6241f8e1d9900947ba9bfb8deb1f7bce\",\"mp_sent_by_lib_version\":\"2.50.0\"}}}]"
+        }
+      ]
+    }
+  ]
+}
