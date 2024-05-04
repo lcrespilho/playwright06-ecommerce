@@ -41,8 +41,7 @@ function updateLogs(logs: object) {
           ...devices['Nexus 10'],
         })
         const page: Page = await context.newPage()
-        // const clientSessionName = 'ecommerce_client_session_' + Math.floor(Math.random() * 5000)
-        const clientSessionName = 'ecommerce_client_session_2066'
+        const clientSessionName = 'ecommerce_client_session_' + Math.floor(Math.random() * 5000)
         const SKIP_THRESHOLD = 0.25
 
         try {
