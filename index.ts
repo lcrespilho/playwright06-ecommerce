@@ -4,7 +4,7 @@ import c from 'ansi-colors'
 import { fakerPT_BR as faker } from '@faker-js/faker'
 import { saveSessionCookies, restoreSessionCookies, flatRequestUrl } from '@lcrespilho/playwright-utils'
 
-const DISABLE_VERBOSE_LOG = false // Gera logs enormes no pm2. Ativar apenas para debug.
+const DISABLE_VERBOSE_LOG = true // Gera logs enormes no pm2. Ativar apenas para debug.
 
 /**
  * Prints to console the { key: value } object parameter as "key: value" string.
