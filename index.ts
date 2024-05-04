@@ -4,7 +4,7 @@ import c from 'ansi-colors'
 import { fakerPT_BR as faker } from '@faker-js/faker'
 import { saveSessionCookies, restoreSessionCookies, flatRequestUrl } from '@lcrespilho/playwright-utils'
 
-const DISABLE_VERBOSE_LOG = true // Gera logs enormes no pm2. Ativar apenas para debug.
+const DISABLE_VERBOSE_LOG = false // Gera logs enormes no pm2. Ativar apenas para debug.
 
 /**
  * Prints to console the { key: value } object parameter as "key: value" string.
@@ -36,7 +36,7 @@ function updateLogs(logs: object) {
 
     await Promise.allSettled(
       // Navegações concorrentes
-      new Array(2).fill(3).map(async (_, idx) => {
+      new Array(3).fill(3).map(async (_, idx) => {
         const context: BrowserContext = await browser.newContext({
           ...devices['Nexus 10'],
         })
@@ -108,13 +108,6 @@ function updateLogs(logs: object) {
             }
           })
 
-          // Faz com que document.hasFocus() seja `true`.
-          page.on('framenavigated', frame => {
-            if (frame === page.mainFrame()) {
-              frame.locator('html').click() // força foco no documento)
-            }
-          })
-
           const referrals = [
             'https://www.google.com/',
             'https://www.facebook.com/',
@@ -141,12 +134,6 @@ function updateLogs(logs: object) {
             referer = referrals[Math.floor(Math.random() * referrals.length)]
           }
 
-          // Closes Cookiebot banner.
-          await page.addLocatorHandler(page.locator('#CybotCookiebotDialog'), async () => {
-            await page.getByRole('button', { name: Math.random() <= 1.0 ? 'Permitir todos' : 'Negar' }).click() // TODO: mudar para 50% no futuro
-            await page.waitForTimeout(1000)
-          })
-
           // 2 view_promotion events
           await Promise.all([
             page.goto('https://louren.co.in/ecommerce/home.html' + utm, {
@@ -155,6 +142,13 @@ function updateLogs(logs: object) {
             }),
             page.waitForResponse(/google.*collect\?v=2/),
           ])
+
+          // Closes Cookiebot banner.
+          page
+            .getByRole('button', { name: Math.random() <= 1.0 ? 'Permitir todos' : 'Negar' })
+            .click({ timeout: 1900 })
+            .catch(() => {})
+
           // at least 500ms to collect "select_promotion" (deliberately delayed by 500ms on website)
           await page.waitForTimeout(2000)
           if (Math.random() < SKIP_THRESHOLD) return
