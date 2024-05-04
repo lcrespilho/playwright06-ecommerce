@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": true,
+    "strict": true,
     "target": "ESNext",
     "module": "CommonJS",
     "outDir": "out",
