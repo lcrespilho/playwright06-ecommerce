@@ -1,22 +1,10 @@
 import { chromium, devices } from 'playwright'
 import type { Page, BrowserContext, Request } from 'playwright'
 import c from 'ansi-colors'
-import fs from 'fs'
 import { fakerPT_BR as faker } from '@faker-js/faker'
-// import { saveSessionCookies, restoreSessionCookies } from '@lcrespilho/playwright-utils'
+import { saveSessionCookies, restoreSessionCookies, flatRequestUrl } from '@lcrespilho/playwright-utils'
 
-/**
- * Returns a flattened request URL by combining the URL and postData parameters
- * of the given Request object.
- * @param {Request} req The Request object containing the URL and postData.
- * @return {*}  {string} A string representing the flattened request URL.
- */
-function flatRequestUrl(req: Request): string {
-  return (req.url() + '&' + (req.postData() || ''))
-    .replace(/\r\n|\n|\r/g, '&')
-    .replace(/&&/g, '&')
-    .replace(/&$/g, '')
-}
+const DISABLE_VERBOSE_LOG = true // Gera logs enormes no pm2. Ativar apenas para debug.
 
 /**
  * Prints to console the { key: value } object parameter as "key: value" string.
@@ -24,6 +12,7 @@ function flatRequestUrl(req: Request): string {
  * @param {object} logs Object containing the data to be printed.
  */
 function updateLogs(logs: object) {
+  if (DISABLE_VERBOSE_LOG) return
   console.clear()
   console.log('Logs:\n')
   for (const [key, value] of Object.entries(logs)) {
@@ -48,26 +37,18 @@ function updateLogs(logs: object) {
     await Promise.allSettled(
       // Navegações concorrentes
       new Array(2).fill(3).map(async (_, idx) => {
-        let page: Page
-        let context: BrowserContext
-        let stateFile = 'states/state_' + Math.floor(Math.random() * 5000) + '.json'
+        const context: BrowserContext = await browser.newContext({
+          ...devices['Nexus 10'],
+        })
+        const page: Page = await context.newPage()
+        // const clientSessionName = 'ecommerce_client_session_' + Math.floor(Math.random() * 5000)
+        const clientSessionName = 'ecommerce_client_session_2066'
         const SKIP_THRESHOLD = 0.25
 
         try {
-          if (!fs.existsSync('states')) fs.mkdirSync('states')
-          if (!fs.existsSync(stateFile)) {
-            // se não existe arquivo de estado, cria um novo
-            fs.writeFileSync(stateFile, '{}', 'utf8')
-          } else {
-            // probability to reset user state
-            if (Math.random() < 0.05) {
-              // fs.writeFileSync(stateFile, '{}', 'utf8') // TODO: descomentar no futuro para permitir/testar churn
-            }
-          }
-          context = await browser.newContext({
-            storageState: stateFile,
-            ...devices['Nexus 10'],
-          })
+          // Small probability to reset (don't restore) user state.
+          if (Math.random() <= 1.0) await restoreSessionCookies(context, clientSessionName) // TODO: mudar para 0.95 no futuro, para simular churn
+
           // Cria o cookie "email" em https://louren.co.in se ele ainda não existir
           if (!(await context.cookies('https://louren.co.in')).find(c => c.name === 'email')) {
             await context.addCookies([
@@ -80,6 +61,7 @@ function updateLogs(logs: object) {
               },
             ])
           }
+
           // Cria cookie "variant" com valor "1", para ser utilizado em futuros testes
           await context.addCookies([
             {
@@ -98,10 +80,10 @@ function updateLogs(logs: object) {
               // window.server_container_url = 'https://enunujuwqdhws.x.pipedream.net'; // https://public.requestbin.com/r/enunujuwqdhws
             `,
           })
-          page = await context.newPage()
 
-          page.on('close', page => {
-            logs[stateFile] = (logs[stateFile] || '') + ' ' + c.gray('page closed')
+          page.on('close', () => {
+            logs[clientSessionName] = (logs[clientSessionName] || '') + ' ' + c.gray('page closed')
+            updateLogs(logs)
           })
 
           page.on('request', async (req: Request) => {
@@ -122,7 +104,7 @@ function updateLogs(logs: object) {
                       return s
                   }
                 })
-              logs[stateFile] = (logs[stateFile] || '') + ' ' + events.join(', ')
+              logs[clientSessionName] = (logs[clientSessionName] || '') + ' ' + events.join(', ')
               updateLogs(logs)
             }
           })
@@ -178,7 +160,7 @@ function updateLogs(logs: object) {
           await page.waitForTimeout(2000)
           if (Math.random() < SKIP_THRESHOLD) return
           // at least 10s to simulate engaged session
-          await page.waitForTimeout(16000)
+          await page.waitForTimeout(10000)
 
           // view_item_list em PDL
           await Promise.all([
@@ -243,13 +225,11 @@ function updateLogs(logs: object) {
         } finally {
           if (page && !page.isClosed()) {
             await page.close({ runBeforeUnload: true })
-            await context.storageState({ path: stateFile })
+            await saveSessionCookies(context, clientSessionName, 1 * 365 * 24 * 60 * 60 /*1 ano em segundos*/)
             await context.close()
           }
         }
       })
     )
   }
-
-  await browser.close()
 })()
