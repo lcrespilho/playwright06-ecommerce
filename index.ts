@@ -3,6 +3,7 @@ import type { Page, BrowserContext, Request } from 'playwright'
 import c from 'ansi-colors'
 import fs from 'fs'
 import { fakerPT_BR as faker } from '@faker-js/faker'
+// import { saveSessionCookies, restoreSessionCookies } from '@lcrespilho/playwright-utils'
 
 /**
  * Returns a flattened request URL by combining the URL and postData parameters
@@ -36,7 +37,7 @@ function updateLogs(logs: object) {
     devtools: process.env.DEVTOOLS === 'true',
   })
 
-  let logs = {}
+  let logs: { [key: string]: string } = {}
   while (true) {
     logs = Object.fromEntries(Object.entries(logs).slice(-30)) // limit `logs` size
 
@@ -45,9 +46,10 @@ function updateLogs(logs: object) {
     for (const context of contexts) await context.close()
 
     await Promise.allSettled(
-      // 2 navegações concorrentes
+      // Navegações concorrentes
       new Array(2).fill(3).map(async (_, idx) => {
-        let page: Page, context: BrowserContext
+        let page: Page
+        let context: BrowserContext
         let stateFile = 'states/state_' + Math.floor(Math.random() * 5000) + '.json'
         const SKIP_THRESHOLD = 0.25
 
@@ -64,7 +66,6 @@ function updateLogs(logs: object) {
           }
           context = await browser.newContext({
             storageState: stateFile,
-            viewport: null,
             ...devices['Nexus 10'],
           })
           // Cria o cookie "email" em https://louren.co.in se ele ainda não existir
@@ -109,7 +110,7 @@ function updateLogs(logs: object) {
             if (url.match(/google.*collect\?v=2.*G-8EEVZD2KXM/)) {
               let [, _et = ''] = url.match(/en=user_engagement.*?&_et=(\d+)/) || [] // extracts _et parameter, if present
               const events = url
-                .match(/&en=[^&]+/g) // ['&en=event1', '&en=event2', ...]
+                .match(/&en=[^&]+/g)! // ['&en=event1', '&en=event2', ...]
                 .map(s => s.replace(/&en=/g, '')) // ['event1', 'event2', ...]
                 .map(s => {
                   switch (s) {
