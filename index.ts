@@ -5,6 +5,7 @@ import { fakerPT_BR as faker } from '@faker-js/faker'
 import { saveSessionCookies, restoreSessionCookies, flatRequestUrl } from '@lcrespilho/playwright-utils'
 
 const DISABLE_VERBOSE_LOG = true // Gera logs enormes no pm2. Ativar apenas para debug.
+const CONCURRENCY = 2 // Navegações concorrentes: precisa ser no máximo 2 na VM free-tier do GCP.
 
 /**
  * Prints to console the { key: value } object parameter as "key: value" string.
@@ -35,8 +36,7 @@ function updateLogs(logs: object) {
     for (const context of contexts) await context.close()
 
     await Promise.allSettled(
-      // Navegações concorrentes: precisa ser no máximo 2 na instância free tier do Google.
-      new Array(2).fill(3).map(async (_, idx) => {
+      new Array(CONCURRENCY).fill(3).map(async (_, idx) => {
         const context: BrowserContext = await browser.newContext({
           ...devices['Nexus 10'],
         })
