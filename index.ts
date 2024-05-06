@@ -2,10 +2,25 @@ import { chromium, devices } from 'playwright'
 import type { Page, BrowserContext, Request } from 'playwright'
 import c from 'ansi-colors'
 import { fakerPT_BR as faker } from '@faker-js/faker'
-import { saveSessionCookies, restoreSessionCookies, flatRequestUrl } from '@lcrespilho/playwright-utils'
+import { flatRequestUrl } from '@lcrespilho/playwright-utils'
+import admin, { ServiceAccount } from 'firebase-admin'
+import dotenv from 'dotenv'
+dotenv.config()
 
 const DISABLE_VERBOSE_LOG = true // Gera logs enormes no pm2. Ativar apenas para debug.
 const CONCURRENCY = 2 // Navegações concorrentes: precisa ser no máximo 2 na VM free-tier do GCP.
+
+const firebaseConfig: ServiceAccount = {
+  projectId: process.env.FIREBASE_PROJECT_ID,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
+  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+}
+admin.initializeApp({
+  credential: admin.credential.cert(firebaseConfig),
+  databaseURL: 'https://lourenco-tests-340212-default-rtdb.firebaseio.com',
+})
+const db = admin.database()
+
 
 /**
  * Prints to console the { key: value } object parameter as "key: value" string.
@@ -41,12 +56,17 @@ function updateLogs(logs: object) {
           ...devices['Nexus 10'],
         })
         const page: Page = await context.newPage()
-        const clientSessionName = 'ecommerce_client_session_' + Math.floor(Math.random() * 5000)
+        const clientSessionName = 'ecommerce/session_' + Math.floor(Math.random() * 5000)
         const SKIP_THRESHOLD = 0.25
 
         try {
           // Small probability to reset (don't restore) user state.
-          if (Math.random() <= 1.0) await restoreSessionCookies(context, clientSessionName) // TODO: mudar para 0.95 no futuro, para simular churn
+          // TODO: mudar para 0.95 no futuro, para simular churn
+          if (Math.random() <= 1.0) {
+            // await restoreSessionCookies(context, clientSessionName)
+            const cookies = (await db.ref(clientSessionName).get()).val()
+            if (cookies) await context.addCookies(cookies)
+          }
 
           // Cria o cookie "email" em https://louren.co.in se ele ainda não existir
           if (!(await context.cookies('https://louren.co.in')).find(c => c.name === 'email')) {
@@ -218,7 +238,9 @@ function updateLogs(logs: object) {
         } finally {
           if (page && !page.isClosed()) {
             await page.close({ runBeforeUnload: true })
-            await saveSessionCookies(context, clientSessionName, 1 * 365 * 24 * 60 * 60 /*1 ano em segundos*/)
+            // await saveSessionCookies(context, clientSessionName, 1 * 365 * 24 * 60 * 60 /*1 ano em segundos*/)
+            const cookies = await context.cookies()
+            if (cookies.length) await db.ref(clientSessionName).set(cookies)
             await context.close()
           }
         }

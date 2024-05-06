@@ -22,5 +22,8 @@ jobs:
             git pull
             npm install
             npx playwright install
+            echo "FIREBASE_PROJECT_ID=\"${{ secrets.FIREBASE_PROJECT_ID }}\"\n" > .env
+            echo "FIREBASE_PRIVATE_KEY=\"${{ secrets.FIREBASE_PRIVATE_KEY }}\"\n" >> .env
+            echo "FIREBASE_CLIENT_EMAIL=\"${{ secrets.FIREBASE_CLIENT_EMAIL }}\"" >> .env
             pm2 restart ecommerce
           EOF
