@@ -1,6 +1,6 @@
 import { job } from './job'
 
-const CONCURRENCY = 20 // Navegações concorrentes: precisa ser no máximo 2 na VM free-tier do GCP.
+const CONCURRENCY = 2 // Navegações concorrentes: precisa ser no máximo 2 na VM free-tier do GCP.
 
 let activeJobs = 0
 
