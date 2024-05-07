@@ -1,6 +1,6 @@
 import { job } from './job'
 
-const CONCURRENCY = 3 // free-tier GCP supports a maximum of 2 instances
+const CONCURRENCY = 2 // free-tier GCP supports a maximum of 2 instances
 
 let activeJobs = 0
 
