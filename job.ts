@@ -202,6 +202,7 @@ export async function job(
         await page.close({ runBeforeUnload: true })
         const sessionCookies = await page.context().cookies()
         if (sessionCookies.length) await db.ref(sessionName).set(sessionCookies)
+        return true // indicates success in flow execution
       }
     } catch (error) {
       console.error('E2:', error)
