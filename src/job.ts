@@ -1,20 +1,7 @@
 import type { Browser, BrowserContext, Page } from 'playwright'
 import { chromium, devices } from 'playwright'
-import admin, { ServiceAccount } from 'firebase-admin'
 import { fakerPT_BR as faker } from '@faker-js/faker'
-import dotenv from 'dotenv'
-dotenv.config()
-
-const firebaseConfig: ServiceAccount = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-}
-admin.initializeApp({
-  credential: admin.credential.cert(firebaseConfig),
-  databaseURL: 'https://lourenco-tests-340212-default-rtdb.firebaseio.com',
-})
-const db = admin.database()
+import { db } from './database'
 
 let browser: Browser
 
@@ -198,14 +185,22 @@ export async function job(
     console.error('E1:', error)
   } finally {
     try {
-      if (page! && !page.isClosed()) {
-        await page.close({ runBeforeUnload: true })
-        const sessionCookies = await page.context().cookies()
-        if (sessionCookies.length) await db.ref(sessionName).set(sessionCookies)
+      if (page!) {
+        // .catch() is necessary because runBeforeUnload throws if the target page has been closed.
+        await page.close({ runBeforeUnload: true }).catch(() => {})
+        // .catch() is necessary because .cookies() throws if the target page has been closed.
+        const sessionCookies = await page
+          .context()
+          .cookies()
+          .catch(() => {})
+        // Don't need .catch because context.close() never throws.
+        await page.context().close()
+        if (sessionCookies?.length) await db.ref(sessionName).set(sessionCookies)
         return true // indicates success in flow execution
       }
     } catch (error) {
       console.error('E2:', error)
     }
+    return false // indicates failure in flow execution
   }
 }

@@ -1,6 +1,6 @@
 import { job } from './job'
 
-const CONCURRENCY = 2 // Navegações concorrentes: precisa ser no máximo 2 na VM free-tier do GCP.
+const CONCURRENCY = 3 // free-tier GCP supports a maximum of 2 instances
 
 let activeJobs = 0
 
@@ -12,7 +12,7 @@ function manageJobs() {
 
 async function startNewJob() {
   activeJobs++
-  process.stdout.write('.')
+  // process.stdout.write('.') // work indicator
   await job(0, 0.25)
   activeJobs--
   manageJobs()

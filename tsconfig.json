@@ -8,5 +8,7 @@
     "inlineSourceMap": true,
     "esModuleInterop": true,
     "lib": ["DOM", "ESNext"]
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

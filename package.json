@@ -2,9 +2,9 @@
   "name": "playwright06-ecommerce",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "out/index.js",
   "scripts": {
-    "test": "npx ts-node index.ts"
+    "test": "npx ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -16,10 +16,10 @@
     "dotenv": "^16.4.5",
     "firebase": "^10.11.1",
     "firebase-admin": "^12.1.0",
-    "playwright": "^1.43.1"
+    "playwright": "^1.44.0"
   },
   "devDependencies": {
-    "@types/node": "^20.12.7",
+    "@types/node": "^20.12.10",
     "typescript": "^5.4.5"
   }
 }
