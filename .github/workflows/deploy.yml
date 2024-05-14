@@ -22,6 +22,7 @@ jobs:
             cd ~/GitRepos/playwright06-ecommerce
             git pull
             npm install
+            # npx playwright install chromium
             echo "FIREBASE_PROJECT_ID=\"${{ secrets.FIREBASE_PROJECT_ID }}\"" > .env
             echo "FIREBASE_PRIVATE_KEY=\"${{ secrets.FIREBASE_PRIVATE_KEY }}\"" >> .env
             echo "FIREBASE_CLIENT_EMAIL=\"${{ secrets.FIREBASE_CLIENT_EMAIL }}\"" >> .env
