@@ -4,7 +4,7 @@
   "description": "",
   "main": "out/index.js",
   "scripts": {
-    "_install": "npm i; npx playwright install --with-deps chromium",
+    "install": "npx playwright install --with-deps chromium",
     "test": "npx ts-node src/index.ts"
   },
   "keywords": [],
