@@ -1,4 +1,4 @@
-name: Deploy on Digital Ocean
+name: Deploy on GCP VM lourenco
 
 on:
   push:
@@ -13,16 +13,15 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY_LOUREN_CO_IN }}" > ~/.ssh/id_ed25519
-          echo "35.222.84.1 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICArDzAYhoe4WRAsbNAE4Y1FcrtILg3U2eNFnuDTpIze" > ~/.ssh/known_hosts
+          echo "louren.co.in ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAII2CTevgsxQHdubtbuxfLJDi9eVVtZr03W1LSdkm4XY5" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_ed25519
       - name: Deploy
         run: |
-          ssh -T lourenco@35.222.84.1 << EOF
+          ssh -T user@louren.co.in << EOF
             pm2 stop ecommerce
             cd ~/GitRepos/playwright06-ecommerce
             git pull
             npm install
-            # npx playwright install chromium
             echo "FIREBASE_PROJECT_ID=\"${{ secrets.FIREBASE_PROJECT_ID }}\"" > .env
             echo "FIREBASE_PRIVATE_KEY=\"${{ secrets.FIREBASE_PRIVATE_KEY }}\"" >> .env
             echo "FIREBASE_CLIENT_EMAIL=\"${{ secrets.FIREBASE_CLIENT_EMAIL }}\"" >> .env

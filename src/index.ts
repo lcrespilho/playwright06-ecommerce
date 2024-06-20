@@ -12,7 +12,7 @@ function manageJobs() {
 
 async function startNewJob() {
   activeJobs++
-  // process.stdout.write('.') // work indicator
+  process.stdout.write('.') // work indicator
   await job(0, 0.25)
   activeJobs--
   manageJobs()
