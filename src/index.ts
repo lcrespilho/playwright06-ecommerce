@@ -1,21 +1,20 @@
 import { job } from './job'
 
-const CONCURRENCY = 2 // free-tier GCP supports a maximum of 2 instances
+// free-tier GCP supports a maximum of 2 instances
+// GCP e2-medium with 2 vCPUs and 4GB-RAM supports 8~10 instances (maximum)
+const CONCURRENCY = 6
 
 let activeJobs = 0
 
-function manageJobs() {
+async function startNewJob() {
+  activeJobs++
+  // process.stdout.write('.') // work indicator
+  await job(0, 0.25)
+  activeJobs--
+}
+
+setInterval(() => {
   while (activeJobs < CONCURRENCY) {
     startNewJob()
   }
-}
-
-async function startNewJob() {
-  activeJobs++
-  process.stdout.write('.') // work indicator
-  await job(0, 0.25)
-  activeJobs--
-  manageJobs()
-}
-
-manageJobs()
+}, 1000)
