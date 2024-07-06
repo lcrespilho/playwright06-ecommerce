@@ -1,23 +1,17 @@
-import type { Browser, BrowserContext, Page } from 'playwright'
+import type { Browser, BrowserContext, Page, Request, Response } from 'playwright'
 import { chromium, devices } from 'playwright'
 import { fakerPT_BR as faker } from '@faker-js/faker'
 import { db } from './database'
+import { USERBASE, CHURNPROBABILITY, NAVIGATIONSKIPTHRESHOLD } from './index'
+import { responseMatcher, requestMatcher } from '@lcrespilho/playwright-utils'
 
 let browser: Browser
 
 export async function job(
   /**
-   * Small chance of churning the session. [default=0]
+   * Session name. EX: 'ecommerce0X/session_XXXXX'
    */
-  churnProbability: number = 0,
-  /**
-   * Navigation skip threshold. [default=0.25]
-   */
-  navigationSkipThreshold: number = 0.25,
-  /**
-   * Session name. [default='ecommerce/session_XXXX']
-   */
-  sessionName: string = 'ecommerce/session_' + Math.floor(Math.random() * 5000)
+  sessionName: string = 'ecommerce01/session_' + String(Math.floor(Math.random() * USERBASE)).padStart(5, '0')
 ) {
   let page: Page
   let context: BrowserContext
@@ -36,15 +30,16 @@ export async function job(
       ...devices['Nexus 10'],
     })
     page = await context.newPage()
+    page.setDefaultNavigationTimeout(60000)
 
-    // Restore previously saved session, or churn the user with `churnProbability` chance.
-    if (Math.random() >= churnProbability) {
+    // Restore previously saved session, or churn the user with `CHURNPROBABILITY` chance.
+    if (Math.random() >= CHURNPROBABILITY) {
       // Restore session, if it already exists
       const savedSessionCookies = (await db.ref(sessionName).get()).val()
       if (savedSessionCookies) await context.addCookies(savedSessionCookies)
     }
 
-    // Create "email" cookie in https://louren.co.in/ if it doesn't exist
+    // Create "email" cookie in .louren.co.in if it doesn't exist
     if (!(await context.cookies('https://louren.co.in')).find(c => c.name === 'email')) {
       await context.addCookies([
         {
@@ -102,85 +97,154 @@ export async function job(
       referer = referrals[Math.floor(Math.random() * referrals.length)]
     }
 
-    // 2 view_promotion events
+    // Home page
+    // 1 page_view + 3 view_promotion + 1 optional select_promotion (80% chance) + 1 scroll
     await Promise.all([
       page.goto('https://louren.co.in/ecommerce/home.html' + utm, {
         waitUntil: 'load',
         referer,
       }),
-      page.waitForResponse(/google.*collect\?v=2/),
+      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
+      // 1 view_promotion G-8EEVZD2KXM + 1 view_promotion G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=view_promotion&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=view_promotion&/)),
+      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
 
     // Closes Cookiebot banner.
     page
-      .getByRole('button', { name: Math.random() <= 1.0 ? 'Permitir todos' : 'Negar' })
+      .getByRole('button', { name: Math.random() <= 0.5 ? 'Permitir todos' : 'Negar' })
       .click({ timeout: 1900 })
       .catch(() => {})
-
-    // at least 500ms to collect "select_promotion" (deliberately delayed by 500ms on website)
     await page.waitForTimeout(2000)
-    if (Math.random() < navigationSkipThreshold) return
-    // at least 10s to simulate engaged session
-    await page.waitForTimeout(10000)
 
-    // view_item_list em PDL
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
+    // to accumulate at least 10s to simulate engaged session
+    await page.waitForTimeout(8000)
+
+    // PDL
     await Promise.all([
       page.locator(Math.random() < 0.75 ? 'text=pdl1.html' : 'text=pdl2.html').click(),
       page.waitForURL(/pdl.\.html/, { waitUntil: 'networkidle' }),
+      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
+      // 1 view_item_list G-8EEVZD2KXM + 1 view_item_list G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=view_item_list&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=view_item_list&/)),
+      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
-    await page.waitForTimeout(6000) // wait for events
-    if (Math.random() < navigationSkipThreshold) return
+    await page.waitForTimeout(2000)
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
-    // select_item when product click
-    // view_item when PDP loads
+    // product click on PDL
     await Promise.all([
       page
         .locator('button', { hasText: 'pdp' })
         .nth(Math.random() < 0.75 ? 0 : 1)
         .click(),
       page.waitForURL(/pdp.\.html/, { waitUntil: 'networkidle' }),
+      // 1 select_item G-8EEVZD2KXM + 1 select_item G-4Z970YCHQZ (on PDL)
+      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=select_item&/)),
+      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=select_item&/)),
+      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ (on PDP)
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
+      // 1 view_item G-8EEVZD2KXM + 1 view_item G-4Z970YCHQZ (on PDP)
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=view_item&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=view_item&/)),
+      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ (on PDP)
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
-    await page.waitForTimeout(6000) // wait for events
-    if (Math.random() < navigationSkipThreshold) return
+    await page.waitForTimeout(2000)
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
-    // add_to_cart
-    await page.locator('text=add_to_cart').click()
-    await page.waitForTimeout(6000) // wait for events
-    if (Math.random() < navigationSkipThreshold) return
+    // add_to_cart on PDP
+    await Promise.all([
+      page.locator('text=add_to_cart').click(),
+      // 1 add_to_cart G-8EEVZD2KXM + 1 add_to_cart G-4Z970YCHQZ (on PDP)
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_to_cart&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_to_cart&/)),
+    ])
+    await page.waitForTimeout(2000)
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
-    // view_cart on cart.html load
+    // Cart
     await Promise.all([
       page.locator('text=cart.html').click(),
       page.waitForURL(/cart\.html/, { waitUntil: 'networkidle' }),
+      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
+      // 1 view_cart G-8EEVZD2KXM + 1 view_cart G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=view_cart&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=view_cart&/)),
+      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
-    await page.waitForTimeout(6000) // wait for events
-    if (Math.random() < navigationSkipThreshold) return
+    await page.waitForTimeout(2000)
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
-    // begin_checkout
+    // begin_checkout on Cart -> Checkout
     await Promise.all([
       page.locator('text=checkout').click(),
+      // 1 begin_checkout G-8EEVZD2KXM + 1 begin_checkout G-4Z970YCHQZ (on Cart)
+      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=begin_checkout&/)),
+      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=begin_checkout&/)),
       page.waitForURL(/checkout\.html/, { waitUntil: 'networkidle' }),
+      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ (on Checkout)
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
+      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ (on Checkout)
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
-    await page.waitForTimeout(6000) // wait for events
-    if (Math.random() < navigationSkipThreshold) return
+    await page.waitForTimeout(2000)
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
-    // add_payment_info
-    await page.locator('text=add_payment_info').click()
-    await page.waitForTimeout(6000) // wait for events
-    if (Math.random() < navigationSkipThreshold) return
+    // add_payment_info on Checkout
+    await Promise.all([
+      page.locator('text=add_payment_info').click(),
+      // 1 add_payment_info G-8EEVZD2KXM + 1 add_payment_info G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_payment_info&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_payment_info&/)),
+    ])
+    await page.waitForTimeout(2000)
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
-    // add_shipping_info
-    await page.locator('text=add_shipping_info').click()
-    await page.waitForTimeout(6000) // wait for events
-    await page.waitForTimeout(1000)
-    if (Math.random() < navigationSkipThreshold) return
+    // add_shipping_info on Checkout
+    await Promise.all([
+      page.locator('text=add_shipping_info').click(),
+      // 1 add_shipping_info G-8EEVZD2KXM + 1 add_shipping_info G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_shipping_info&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_shipping_info&/)),
+    ])
+    await page.waitForTimeout(2000)
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
-    // purchase
+    // purchase on Checkout
     await Promise.all([
       page.locator('text=finalizar compra').click(),
       page.waitForURL(/typ\.html/, { waitUntil: 'networkidle' }),
+      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
+      // 1 purchase G-8EEVZD2KXM + 1 purchase G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=purchase&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=purchase&/)),
+      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
-    await page.waitForTimeout(6000) // wait for events
+    await page.waitForTimeout(2000)
   } catch (error) {
     console.error('E1:', error)
   } finally {
