@@ -5,7 +5,8 @@
   "main": "out/index.js",
   "scripts": {
     "install": "npx playwright install chromium",
-    "test": "npx ts-node src/index.ts"
+    "test": "npx ts-node src/index.ts",
+    "fetchDb": "npx ts-node src/fetchDb.ts"
   },
   "keywords": [],
   "author": "",
