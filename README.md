@@ -6,4 +6,4 @@ Os bots rodam numa VM GCP em us-central1-a.
 
 Para rodar o projeto: `npx ts-node src/index.ts`
 
-Para ver o conteúdo dos cookies dos bots: `npx ts-node src/getDb.ts`. Isso fará o download do arquivo ./allCookies.json contendo todos os cookies.
+Para ver o conteúdo dos cookies dos bots: `npx ts-node src/fetchDb.ts`. Isso fará o download do arquivo ./allCookies.json contendo todos os cookies.
