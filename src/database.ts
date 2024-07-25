@@ -10,7 +10,7 @@ const firebaseConfig: ServiceAccount = {
 }
 admin.initializeApp({
   credential: admin.credential.cert(firebaseConfig),
-  databaseURL: 'https://lourenco-tests-340212-default-rtdb.firebaseio.com',
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
 })
 
 export const db = admin.database()

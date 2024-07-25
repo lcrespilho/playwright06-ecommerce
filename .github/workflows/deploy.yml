@@ -26,5 +26,6 @@ jobs:
             echo "FIREBASE_PROJECT_ID=\"${{ secrets.FIREBASE_PROJECT_ID }}\"" > .env
             echo "FIREBASE_PRIVATE_KEY=\"${{ secrets.FIREBASE_PRIVATE_KEY }}\"" >> .env
             echo "FIREBASE_CLIENT_EMAIL=\"${{ secrets.FIREBASE_CLIENT_EMAIL }}\"" >> .env
+            echo "FIREBASE_DATABASE_URL=\"${{ secrets.FIREBASE_DATABASE_URL }}\"" >> .env
             pm2 restart ecommerce
           EOF
