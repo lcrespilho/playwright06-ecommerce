@@ -124,7 +124,7 @@ export async function job(
 
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
     // to accumulate at least 10s to simulate engaged session
-    await page.waitForTimeout(8000)
+    await page.waitForTimeout(28000)
 
     // PDL
     await Promise.all([
@@ -140,7 +140,7 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(22000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
     // product click on PDL
@@ -163,7 +163,7 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(22000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
     // add_to_cart on PDP
@@ -173,7 +173,7 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_to_cart&/)),
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_to_cart&/)),
     ])
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(22000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
     // Cart
@@ -190,7 +190,7 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(22000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
     // begin_checkout on Cart -> Checkout
@@ -207,7 +207,7 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(22000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
     // add_payment_info on Checkout
@@ -217,7 +217,7 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_payment_info&/)),
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_payment_info&/)),
     ])
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(22000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
     // add_shipping_info on Checkout
@@ -227,7 +227,7 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_shipping_info&/)),
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_shipping_info&/)),
     ])
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(22000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
     // purchase on Checkout
@@ -244,7 +244,7 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
-    await page.waitForTimeout(2000)
+    await page.waitForTimeout(22000)
   } catch (error) {
     console.error('E1:', error)
   } finally {
