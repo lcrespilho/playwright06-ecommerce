@@ -39,6 +39,13 @@ export async function job(
       if (savedSessionCookies) await context.addCookies(savedSessionCookies)
     }
 
+    // Se o banner de cookies aparecer, clico em allow ou decline com 50% de chance
+    const cookiebotAllowLocator = page.locator('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll')
+    const cookiebotDeclineLocator = page.locator('#CybotCookiebotDialogBodyButtonDecline')
+    Math.random() > 0.5
+      ? cookiebotAllowLocator.click().catch(() => {})
+      : cookiebotDeclineLocator.click().catch(() => {})
+
     // Create "email" cookie in .louren.co.in if it doesn't exist
     if (!(await context.cookies('https://louren.co.in')).find(c => c.name === 'email')) {
       await context.addCookies([
