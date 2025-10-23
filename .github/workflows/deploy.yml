@@ -18,7 +18,7 @@ jobs:
       - name: Deploy
         run: |
           ssh -T user@louren.co.in << EOF
-            export PATH=/home/user/.nvm/versions/node/v22.3.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/snap/bin
+            export PATH=/home/user/.nvm/versions/node/v23.11.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/snap/bin
             pm2 stop ecommerce
             cd ~/GitRepos/playwright06-ecommerce
             git pull
