@@ -122,13 +122,6 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
 
-    // Closes Cookiebot banner.
-    page
-      .getByRole('button', { name: Math.random() <= 0.5 ? 'Permitir todos' : 'Negar' })
-      .click({ timeout: 1900 })
-      .catch(() => {})
-    await page.waitForTimeout(2000)
-
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
     // to accumulate at least 10s to simulate engaged session
     await page.waitForTimeout(28000)

@@ -7,9 +7,9 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program",
+      "name": "Launch Program (compiled JS)",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/src/index.ts",
+      "program": "${workspaceFolder}/out/index.js",
       "preLaunchTask": "tsc: build - tsconfig.json",
       "env": {
         "HEADLESS": "false",
