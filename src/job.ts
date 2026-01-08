@@ -129,9 +129,9 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
 
-    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
     // to accumulate at least 10s to simulate engaged session
-    await page.waitForTimeout(28000)
+    await page.waitForTimeout(20000)
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
 
     // PDL
     await Promise.all([
