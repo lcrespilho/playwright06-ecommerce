@@ -1,4 +1,4 @@
-import type { Browser, BrowserContext, Page, Request, Response } from 'playwright'
+import type { Browser, BrowserContext, LaunchOptions, Page, Request, Response } from 'playwright'
 import { chromium, devices } from 'playwright'
 import { fakerPT_BR as faker } from '@faker-js/faker'
 import { db } from './database'
@@ -11,7 +11,7 @@ export async function job(
   /**
    * Session name. EX: 'ecommerce0X/session_XXXXX'
    */
-  sessionName: string = 'ecommerce01/session_' + String(Math.floor(Math.random() * USERBASE)).padStart(5, '0')
+  sessionName: string = 'ecommerce01/session_' + String(Math.floor(Math.random() * USERBASE)).padStart(5, '0'),
 ) {
   let page: Page
   let context: BrowserContext
@@ -19,10 +19,11 @@ export async function job(
   try {
     // Only one browser instance
     if (!browser) {
-      browser = await chromium.launch({
+      const launchOptions: LaunchOptions = {
         headless: process.env.HEADLESS !== 'false',
-        devtools: process.env.DEVTOOLS === 'true',
-      })
+      }
+      if (process.env.DEVTOOLS === 'true') launchOptions.args = ['--auto-open-devtools-for-tabs']
+      browser = await chromium.launch(launchOptions)
     }
 
     // Create new context and new page
@@ -43,8 +44,14 @@ export async function job(
     const cookiebotAllowLocator = page.locator('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll')
     const cookiebotDeclineLocator = page.locator('#CybotCookiebotDialogBodyButtonDecline')
     Math.random() > 0.5
-      ? cookiebotAllowLocator.click().catch(() => {})
-      : cookiebotDeclineLocator.click().catch(() => {})
+      ? cookiebotAllowLocator
+          .click()
+          .then(() => console.log('>>> Cookies granted'))
+          .catch(() => {})
+      : cookiebotDeclineLocator
+          .click()
+          .then(() => console.log('>>> Cookies denied'))
+          .catch(() => {})
 
     // Create "email" cookie in .louren.co.in if it doesn't exist
     if (!(await context.cookies('https://louren.co.in')).find(c => c.name === 'email')) {
@@ -113,6 +120,8 @@ export async function job(
 
     // Home page
     // 1 page_view + 3 view_promotion + 1 optional select_promotion (80% chance) + 1 scroll
+    // Obs: curiosamente, múltiplos page.waitForResponse() olham para a mesma requisição. Isso significa que não preciso mais usar o
+    // enableGADebug para garantir que não haja batch de eventos.
     await Promise.all([
       page.goto('https://louren.co.in/ecommerce/home.html' + utm, {
         waitUntil: 'load',
