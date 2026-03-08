@@ -14,7 +14,7 @@ jobs:
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY_LOUREN_CO_IN }}" > ~/.ssh/id_ed25519
-          echo "louren.co.in ssh-ed25519 ikxc4gow+dxwupHyRaysnHXXJ1DVpzngnlPkBwxJO2A" > ~/.ssh/known_hosts
+          echo "louren.co.in ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMul97Ta2yyZIyEXZBZGkIaoPmvXQrAx74IbXW/tsafX" > ~/.ssh/known_hosts
           chmod 600 ~/.ssh/id_ed25519
       - name: Deploy
         run: |
