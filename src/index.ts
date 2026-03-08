@@ -5,7 +5,7 @@ import { job } from './job'
 const CONCURRENCY = 1
 export const USERBASE = 20000 // number of users
 export const CHURNPROBABILITY = 0.05 // Small chance of churning the user
-export const NAVIGATIONSKIPTHRESHOLD = 0.25 // Chance to drop navigation between steps
+export const NAVIGATIONSKIPTHRESHOLD = 0.10 // Chance to drop navigation between steps
 
 let activeJobs = 0
 async function startNewJob() {
