@@ -2,7 +2,7 @@ import type { Browser, BrowserContext, LaunchOptions, Page, Request, Response } 
 import { chromium, devices } from 'playwright'
 import { fakerPT_BR as faker } from '@faker-js/faker'
 import { db } from './database'
-import { USERBASE, CHURNPROBABILITY, NAVIGATIONSKIPTHRESHOLD } from './index'
+import { USERBASE, CHURNPROBABILITY, NAVIGATIONSKIPTHRESHOLD, FIREBASEDBNAMESPACE } from './index'
 import { responseMatcher, requestMatcher } from '@lcrespilho/playwright-utils'
 
 let browser: Browser
@@ -11,7 +11,7 @@ export async function job(
   /**
    * Session name. EX: 'ecommerce0X/session_XXXXX'
    */
-  sessionName: string = 'ecommerce01/session_' + String(Math.floor(Math.random() * USERBASE)).padStart(5, '0'),
+  sessionName: string = `${FIREBASEDBNAMESPACE}/session_${String(Math.floor(Math.random() * USERBASE)).padStart(5, '0')}`,
 ) {
   let page: Page
   let context: BrowserContext

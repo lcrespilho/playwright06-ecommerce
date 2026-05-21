@@ -5,6 +5,7 @@
     "target": "ESNext",
     "module": "CommonJS",
     "outDir": "out",
+    "rootDir": "src",
     "inlineSourceMap": true,
     "esModuleInterop": true,
     "lib": ["DOM", "ESNext"]
