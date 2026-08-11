@@ -2,7 +2,16 @@ import type { Browser, BrowserContext, LaunchOptions, Page, Request, Response } 
 import { chromium, devices } from 'playwright'
 import { fakerPT_BR as faker } from '@faker-js/faker'
 import { db } from './database'
-import { USERBASE, CHURNPROBABILITY, NAVIGATIONSKIPTHRESHOLD, FIREBASEDBNAMESPACE } from './index'
+import {
+  USERBASE,
+  CHURNPROBABILITY,
+  NAVIGATIONSKIPTHRESHOLD,
+  FIREBASEDBNAMESPACE,
+  DEVTOOLS,
+  HEADLESS,
+  LOG,
+  GRANTCONSENTPROBABILITY,
+} from './index'
 import { responseMatcher, requestMatcher } from '@lcrespilho/playwright-utils'
 
 let browser: Browser
@@ -16,20 +25,18 @@ export async function job(
   let page: Page
   let context: BrowserContext
 
+  LOG && console.log('sessionName:', sessionName)
+
   try {
     // Only one browser instance
     if (!browser) {
-      const launchOptions: LaunchOptions = {
-        headless: process.env.HEADLESS !== 'false',
-      }
-      if (process.env.DEVTOOLS === 'true') launchOptions.args = ['--auto-open-devtools-for-tabs']
+      const launchOptions: LaunchOptions = { headless: HEADLESS }
+      if (DEVTOOLS) launchOptions.args = ['--auto-open-devtools-for-tabs']
       browser = await chromium.launch(launchOptions)
     }
 
     // Create new context and new page
-    context = await browser.newContext({
-      ...devices['Nexus 10'],
-    })
+    context = await browser.newContext({ ...devices['Nexus 10'], serviceWorkers: 'block' })
     page = await context.newPage()
     page.setDefaultNavigationTimeout(60000)
 
@@ -37,20 +44,27 @@ export async function job(
     if (Math.random() >= CHURNPROBABILITY) {
       // Restore session, if it already exists
       const savedSessionCookies = (await db.ref(sessionName).get()).val()
-      if (savedSessionCookies) await context.addCookies(savedSessionCookies)
+      if (savedSessionCookies) {
+        LOG && console.log('restoring session')
+        await context.addCookies(savedSessionCookies)
+      } else {
+        LOG && console.log('creating new session')
+      }
+    } else {
+      LOG && console.log('creating new session')
     }
 
     // Se o banner de cookies aparecer, clico em allow ou decline com 50% de chance
     const cookiebotAllowLocator = page.locator('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll')
     const cookiebotDeclineLocator = page.locator('#CybotCookiebotDialogBodyButtonDecline')
-    Math.random() > 0.5
+    Math.random() <= GRANTCONSENTPROBABILITY
       ? cookiebotAllowLocator
           .click()
-          .then(() => console.log('>>> Cookies granted'))
+          .then(() => LOG && console.log('cookies granted'))
           .catch(() => {})
       : cookiebotDeclineLocator
           .click()
-          .then(() => console.log('>>> Cookies denied'))
+          .then(() => LOG && console.log('cookies denied'))
           .catch(() => {})
 
     // Create "email" cookie in .louren.co.in if it doesn't exist
@@ -66,20 +80,10 @@ export async function job(
       ])
     }
 
-    // Create "variant=1" cookie for future tests.
-    await context.addCookies([
-      {
-        name: 'variant',
-        value: '1',
-        domain: '.louren.co.in',
-        path: '/',
-        expires: Date.now() / 1000 + 1 * 365 * 24 * 60 * 60, // 1 ano
-      },
-    ])
-
     await context.addInitScript({
       content: `
-      window.is_playwright_bot = true; // feeds GA4 custom dimensions (event and user scopes)
+      window.is_playwright_bot = true // feed GA4 custom dimensions (event and user scopes)
+      window.bot_version = '2.0.0' // feed GA4 event scoped dimension
       // window.debug_mode = true; // uncomment to enable GA4 DebugView
       // window.server_container_url = 'https://enunujuwqdhws.x.pipedream.net'; // https://public.requestbin.com/r/enunujuwqdhws
       
@@ -89,6 +93,7 @@ export async function job(
         enumerable: true,
         value: false,
       })
+      window.fetchOrig = window.fetch
     `,
     })
 
@@ -122,6 +127,7 @@ export async function job(
     // 1 page_view + 3 view_promotion + 1 optional select_promotion (80% chance) + 1 scroll
     // Obs: curiosamente, múltiplos page.waitForResponse() olham para a mesma requisição. Isso significa que não preciso mais usar o
     // enableGADebug para garantir que não haja batch de eventos.
+    LOG && console.log(`utms: ${utm}; referrer: ${referer}`)
     await Promise.all([
       page.goto('https://louren.co.in/ecommerce/home.html' + utm, {
         waitUntil: 'load',
@@ -138,9 +144,12 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
 
-    // to accumulate at least 10s to simulate engaged session
-    await page.waitForTimeout(10000)
-    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
+      LOG && console.log('Skip PDL (1/8)')
+      return
+    } else {
+      LOG && console.log('Don\'t skip PDL (1/8)')
+    }
 
     // PDL
     await Promise.all([
@@ -157,7 +166,12 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
     await page.waitForTimeout(5000)
-    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
+      LOG && console.log('Skip PDP (2/8)')
+      return
+    } else {
+      LOG && console.log('Don\'t skip PDP (2/8)')
+    }
 
     // product click on PDL
     await Promise.all([
@@ -167,8 +181,8 @@ export async function job(
         .click(),
       page.waitForURL(/pdp.\.html/, { waitUntil: 'networkidle' }),
       // 1 select_item G-8EEVZD2KXM + 1 select_item G-4Z970YCHQZ (on PDL)
-      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=select_item&/)),
-      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=select_item&/)),
+      // page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=select_item&/)),
+      // page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=select_item&/)),
       // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ (on PDP)
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
@@ -180,7 +194,12 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
     await page.waitForTimeout(5000)
-    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
+      LOG && console.log('Skip add_to_cart (3/8)')
+      return
+    } else {
+      LOG && console.log('Don\'t skip add_to_cart (3/8)')
+    }
 
     // add_to_cart on PDP
     await Promise.all([
@@ -190,7 +209,12 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_to_cart&/)),
     ])
     await page.waitForTimeout(5000)
-    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
+      LOG && console.log('Skip Cart (4/8)')
+      return
+    } else {
+      LOG && console.log('Don\'t skip Cart (4/8)')
+    }
 
     // Cart
     await Promise.all([
@@ -207,7 +231,12 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
     await page.waitForTimeout(5000)
-    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
+      LOG && console.log('Skip Checkout (5/8)')
+      return
+    } else {
+      LOG && console.log('Don\'t skip Checkout (5/8)')
+    }
 
     // begin_checkout on Cart -> Checkout
     await Promise.all([
@@ -224,7 +253,12 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
     ])
     await page.waitForTimeout(5000)
-    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
+      LOG && console.log('Skip add_payment_info (6/8)')
+      return
+    } else {
+      LOG && console.log('Don\'t skip add_payment_info (6/8)')
+    }
 
     // add_payment_info on Checkout
     await Promise.all([
@@ -234,7 +268,12 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_payment_info&/)),
     ])
     await page.waitForTimeout(5000)
-    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
+      LOG && console.log('Skip add_shipping_info (7/8)')
+      return
+    } else {
+      LOG && console.log('Don\'t skip add_shipping_info (7/8)')
+    }
 
     // add_shipping_info on Checkout
     await Promise.all([
@@ -244,7 +283,12 @@ export async function job(
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_shipping_info&/)),
     ])
     await page.waitForTimeout(5000)
-    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) return
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
+      LOG && console.log('Skip purchase (8/8)')
+      return
+    } else {
+      LOG && console.log('Don\'t skip purchase (8/8)')
+    }
 
     // purchase on Checkout
     await Promise.all([
@@ -275,7 +319,10 @@ export async function job(
           .catch(() => {})
         // Don't need .catch because context.close() never throws.
         await page.context().close()
-        if (sessionCookies?.length) await db.ref(sessionName).set(sessionCookies)
+        if (sessionCookies?.length) {
+          LOG && console.log('saving session cookies')
+          await db.ref(sessionName).set(sessionCookies)
+        }
         return true // indicates success in flow execution
       }
     } catch (error) {

@@ -7,15 +7,15 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch Program (compiled JS)",
+      "name": "Debug Program (tsx)",
       "skipFiles": ["<node_internals>/**"],
-      "program": "${workspaceFolder}/out/index.js",
-      "preLaunchTask": "tsc: build - tsconfig.json",
+      "runtimeArgs": ["--import", "tsx"],
+      "program": "${workspaceFolder}/src/index.ts",
       "env": {
         "HEADLESS": "false",
-        "DEVTOOLS": "true"
-      },
-      "outFiles": ["${workspaceFolder}/out/**/*.js"]
+        "DEVTOOLS": "false",
+        "LOG": "true"
+      }
     }
   ]
 }

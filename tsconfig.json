@@ -1,14 +1,10 @@
 {
   "compilerOptions": {
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
     "target": "ESNext",
-    "module": "CommonJS",
+    "module": "esnext",
     "outDir": "out",
     "rootDir": "src",
-    "inlineSourceMap": true,
-    "esModuleInterop": true,
-    "lib": ["DOM", "ESNext"]
+    "lib": ["DOM", "ESNext", "DOM.Iterable"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]
