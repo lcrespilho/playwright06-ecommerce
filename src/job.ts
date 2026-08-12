@@ -254,25 +254,10 @@ export async function job(
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
-      LOG && console.log('Skip add_payment_info (6/8)')
+      LOG && console.log('Skip add_shipping_info (6/8)')
       return
     } else {
-      LOG && console.log('Don\'t skip add_payment_info (6/8)')
-    }
-
-    // add_payment_info on Checkout
-    await Promise.all([
-      page.locator('text=add_payment_info').click(),
-      // 1 add_payment_info G-8EEVZD2KXM + 1 add_payment_info G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_payment_info&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_payment_info&/)),
-    ])
-    await page.waitForTimeout(5000)
-    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
-      LOG && console.log('Skip add_shipping_info (7/8)')
-      return
-    } else {
-      LOG && console.log('Don\'t skip add_shipping_info (7/8)')
+      LOG && console.log('Don\'t skip add_shipping_info (6/8)')
     }
 
     // add_shipping_info on Checkout
@@ -281,6 +266,21 @@ export async function job(
       // 1 add_shipping_info G-8EEVZD2KXM + 1 add_shipping_info G-4Z970YCHQZ
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_shipping_info&/)),
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_shipping_info&/)),
+    ])
+    await page.waitForTimeout(5000)
+    if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
+      LOG && console.log('Skip add_payment_info (7/8)')
+      return
+    } else {
+      LOG && console.log('Don\'t skip add_payment_info (7/8)')
+    }
+
+    // add_payment_info on Checkout
+    await Promise.all([
+      page.locator('text=add_payment_info').click(),
+      // 1 add_payment_info G-8EEVZD2KXM + 1 add_payment_info G-4Z970YCHQZ
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_payment_info&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_payment_info&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
