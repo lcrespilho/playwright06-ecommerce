@@ -2,26 +2,12 @@ import type { Browser, BrowserContext, LaunchOptions, Page, Request, Response } 
 import { chromium, devices } from 'playwright'
 import { fakerPT_BR as faker } from '@faker-js/faker'
 import { db } from './database'
-import {
-  USERBASE,
-  CHURNPROBABILITY,
-  NAVIGATIONSKIPTHRESHOLD,
-  FIREBASEDBNAMESPACE,
-  DEVTOOLS,
-  HEADLESS,
-  LOG,
-  GRANTCONSENTPROBABILITY,
-} from './index'
+import { CHURNPROBABILITY, NAVIGATIONSKIPTHRESHOLD, DEVTOOLS, HEADLESS, LOG, GRANTCONSENTPROBABILITY } from './index'
 import { responseMatcher, requestMatcher } from '@lcrespilho/playwright-utils'
 
 let browser: Browser
 
-export async function job(
-  /**
-   * Session name. EX: 'ecommerce0X/session_XXXXX'
-   */
-  sessionName: string = `${FIREBASEDBNAMESPACE}/session_${String(Math.floor(Math.random() * USERBASE)).padStart(5, '0')}`,
-) {
+export async function job(sessionName: string) {
   let page: Page
   let context: BrowserContext
 
@@ -83,7 +69,7 @@ export async function job(
     await context.addInitScript({
       content: `
       window.is_playwright_bot = true // feed GA4 custom dimensions (event and user scopes)
-      window.bot_version = '2.0.0' // feed GA4 event scoped dimension
+      window.bot_version = '3.0.0' // feed GA4 event scoped dimension
       // window.debug_mode = true; // uncomment to enable GA4 DebugView
       // window.server_container_url = 'https://enunujuwqdhws.x.pipedream.net'; // https://public.requestbin.com/r/enunujuwqdhws
       
@@ -148,7 +134,7 @@ export async function job(
       LOG && console.log('Skip PDL (1/8)')
       return
     } else {
-      LOG && console.log('Don\'t skip PDL (1/8)')
+      LOG && console.log("Don't skip PDL (1/8)")
     }
 
     // PDL
@@ -170,7 +156,7 @@ export async function job(
       LOG && console.log('Skip PDP (2/8)')
       return
     } else {
-      LOG && console.log('Don\'t skip PDP (2/8)')
+      LOG && console.log("Don't skip PDP (2/8)")
     }
 
     // product click on PDL
@@ -198,7 +184,7 @@ export async function job(
       LOG && console.log('Skip add_to_cart (3/8)')
       return
     } else {
-      LOG && console.log('Don\'t skip add_to_cart (3/8)')
+      LOG && console.log("Don't skip add_to_cart (3/8)")
     }
 
     // add_to_cart on PDP
@@ -213,7 +199,7 @@ export async function job(
       LOG && console.log('Skip Cart (4/8)')
       return
     } else {
-      LOG && console.log('Don\'t skip Cart (4/8)')
+      LOG && console.log("Don't skip Cart (4/8)")
     }
 
     // Cart
@@ -235,7 +221,7 @@ export async function job(
       LOG && console.log('Skip Checkout (5/8)')
       return
     } else {
-      LOG && console.log('Don\'t skip Checkout (5/8)')
+      LOG && console.log("Don't skip Checkout (5/8)")
     }
 
     // begin_checkout on Cart -> Checkout
@@ -257,7 +243,7 @@ export async function job(
       LOG && console.log('Skip add_shipping_info (6/8)')
       return
     } else {
-      LOG && console.log('Don\'t skip add_shipping_info (6/8)')
+      LOG && console.log("Don't skip add_shipping_info (6/8)")
     }
 
     // add_shipping_info on Checkout
@@ -272,7 +258,7 @@ export async function job(
       LOG && console.log('Skip add_payment_info (7/8)')
       return
     } else {
-      LOG && console.log('Don\'t skip add_payment_info (7/8)')
+      LOG && console.log("Don't skip add_payment_info (7/8)")
     }
 
     // add_payment_info on Checkout
@@ -287,7 +273,7 @@ export async function job(
       LOG && console.log('Skip purchase (8/8)')
       return
     } else {
-      LOG && console.log('Don\'t skip purchase (8/8)')
+      LOG && console.log("Don't skip purchase (8/8)")
     }
 
     // purchase on Checkout
