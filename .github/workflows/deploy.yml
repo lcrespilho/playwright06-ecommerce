@@ -19,11 +19,12 @@ jobs:
       - name: Deploy
         run: |
           ssh -T user@louren.co.in << EOF
-            export PATH=/home/user/.nvm/versions/node/v23.11.0/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/snap/bin
+            export PATH=/home/user/.deno/bin:/home/user/.nvm/versions/node/v26.8.1/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/games:/usr/games:/snap/bin
             pm2 stop ecommerce
             cd ~/GitRepos/playwright06-ecommerce
             git pull
-            npm install
+            rm -rf node_modules
+            npm ci
             echo "FIREBASE_PROJECT_ID=\"${{ secrets.FIREBASE_PROJECT_ID }}\"" > .env
             echo "FIREBASE_PRIVATE_KEY=\"${{ secrets.FIREBASE_PRIVATE_KEY }}\"" >> .env
             echo "FIREBASE_CLIENT_EMAIL=\"${{ secrets.FIREBASE_CLIENT_EMAIL }}\"" >> .env

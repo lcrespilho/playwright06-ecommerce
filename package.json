@@ -26,10 +26,9 @@
     "typescript": "^7.0.2"
   },
   "allowScripts": {
-    "@firebase/util@1.15.2": true,
-    "fsevents@2.3.2": true,
-    "protobufjs@7.6.5": true,
-    "esbuild@0.28.2": true,
-    "fsevents@2.3.3": true
+    "@firebase/util": true,
+    "protobufjs": true,
+    "esbuild": true,
+    "fsevents": true
   }
 }
