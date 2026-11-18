@@ -13,7 +13,7 @@
       "program": "${workspaceFolder}/src/index.ts",
       "env": {
         "HEADLESS": "false",
-        "DEVTOOLS": "false",
+        "DEVTOOLS": "true",
         "LOG": "true"
       }
     }
