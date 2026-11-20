@@ -157,7 +157,7 @@ export async function job(sessionName: string) {
         .click(),
       page.waitForURL(/pdp.\.html/, { waitUntil: 'networkidle' }),
       // 1 select_item on PDL
-      page.waitForRequest(requestMatcher(/(Deno|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=select_item&/)),
+      page.waitForRequest(requestMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=select_item&/)),
       // 1 page_view on PDP
       page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
       // 1 view_item on PDP
