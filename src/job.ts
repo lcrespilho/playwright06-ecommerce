@@ -69,17 +69,13 @@ export async function job(sessionName: string) {
     await context.addInitScript({
       content: `
       window.is_playwright_bot = true // feed GA4 custom dimensions (event and user scopes)
-      window.bot_version = '3.0.0' // feed GA4 event scoped dimension
-      // window.debug_mode = true; // uncomment to enable GA4 DebugView
-      // window.server_container_url = 'https://enunujuwqdhws.x.pipedream.net'; // https://public.requestbin.com/r/enunujuwqdhws
-      
+      window.bot_version = '3' // feed GA4 event scoped dimension
       // Bypass navigator.webdriver Bot detection
       Object.defineProperty(Navigator.prototype, 'webdriver', {
         configurable: true,
         enumerable: true,
         value: false,
       })
-      window.fetchOrig = window.fetch
     `,
     })
 
@@ -119,15 +115,12 @@ export async function job(sessionName: string) {
         waitUntil: 'load',
         referer,
       }),
-      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
-      // 1 view_promotion G-8EEVZD2KXM + 1 view_promotion G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=view_promotion&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=view_promotion&/)),
-      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
+      // 1 page_view
+      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      // 1 view_promotion
+      page.waitForResponse(
+        responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=view_promotion&/),
+      ),
     ])
 
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -141,15 +134,12 @@ export async function job(sessionName: string) {
     await Promise.all([
       page.locator(Math.random() < 0.75 ? 'text=pdl1.html' : 'text=pdl2.html').click(),
       page.waitForURL(/pdl.\.html/, { waitUntil: 'networkidle' }),
-      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
-      // 1 view_item_list G-8EEVZD2KXM + 1 view_item_list G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=view_item_list&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=view_item_list&/)),
-      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
+      // 1 page_view
+      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      // 1 view_item_list
+      page.waitForResponse(
+        responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=view_item_list&/),
+      ),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -166,18 +156,12 @@ export async function job(sessionName: string) {
         .nth(Math.random() < 0.75 ? 0 : 1)
         .click(),
       page.waitForURL(/pdp.\.html/, { waitUntil: 'networkidle' }),
-      // 1 select_item G-8EEVZD2KXM + 1 select_item G-4Z970YCHQZ (on PDL)
-      // page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=select_item&/)),
-      // page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=select_item&/)),
-      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ (on PDP)
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
-      // 1 view_item G-8EEVZD2KXM + 1 view_item G-4Z970YCHQZ (on PDP)
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=view_item&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=view_item&/)),
-      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ (on PDP)
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
+      // 1 select_item on PDL
+      page.waitForRequest(requestMatcher(/(Deno|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=select_item&/)),
+      // 1 page_view on PDP
+      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      // 1 view_item on PDP
+      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=view_item&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -190,9 +174,10 @@ export async function job(sessionName: string) {
     // add_to_cart on PDP
     await Promise.all([
       page.locator('text=add_to_cart').click(),
-      // 1 add_to_cart G-8EEVZD2KXM + 1 add_to_cart G-4Z970YCHQZ (on PDP)
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_to_cart&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_to_cart&/)),
+      // 1 add_to_cart on PDP
+      page.waitForResponse(
+        responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=add_to_cart&/),
+      ),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -206,15 +191,10 @@ export async function job(sessionName: string) {
     await Promise.all([
       page.locator('text=cart.html').click(),
       page.waitForURL(/cart\.html/, { waitUntil: 'networkidle' }),
-      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
-      // 1 view_cart G-8EEVZD2KXM + 1 view_cart G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=view_cart&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=view_cart&/)),
-      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
+      // 1 page_view
+      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      // 1 view_cart
+      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=view_cart&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -227,16 +207,13 @@ export async function job(sessionName: string) {
     // begin_checkout on Cart -> Checkout
     await Promise.all([
       page.locator('text=checkout').click(),
-      // 1 begin_checkout G-8EEVZD2KXM + 1 begin_checkout G-4Z970YCHQZ (on Cart)
-      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=begin_checkout&/)),
-      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=begin_checkout&/)),
+      // 1 begin_checkout on Cart
+      page.waitForRequest(
+        requestMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=begin_checkout&/),
+      ),
       page.waitForURL(/checkout\.html/, { waitUntil: 'networkidle' }),
-      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ (on Checkout)
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
-      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ (on Checkout)
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
+      // 1 page_view on Checkout
+      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -249,9 +226,10 @@ export async function job(sessionName: string) {
     // add_shipping_info on Checkout
     await Promise.all([
       page.locator('text=add_shipping_info').click(),
-      // 1 add_shipping_info G-8EEVZD2KXM + 1 add_shipping_info G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_shipping_info&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_shipping_info&/)),
+      // 1 add_shipping_info
+      page.waitForResponse(
+        responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*n=add_shipping_info&/),
+      ),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -264,9 +242,10 @@ export async function job(sessionName: string) {
     // add_payment_info on Checkout
     await Promise.all([
       page.locator('text=add_payment_info').click(),
-      // 1 add_payment_info G-8EEVZD2KXM + 1 add_payment_info G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=add_payment_info&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=add_payment_info&/)),
+      // 1 add_payment_info
+      page.waitForResponse(
+        responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=add_payment_info&/),
+      ),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -279,16 +258,11 @@ export async function job(sessionName: string) {
     // purchase on Checkout
     await Promise.all([
       page.locator('text=finalizar compra').click(),
-      page.waitForURL(/typ\.html/, { waitUntil: 'networkidle' }),
-      // 1 page_view G-8EEVZD2KXM + 1 page_view G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=page_view&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=page_view&/)),
-      // 1 purchase G-8EEVZD2KXM + 1 purchase G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=purchase&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=purchase&/)),
-      // 1 scroll G-8EEVZD2KXM + 1 scroll G-4Z970YCHQZ
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-8EEVZD2KXM.*en=scroll&/)),
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-4Z970YCHQZ.*en=scroll&/)),
+      page.waitForURL(/typ\.html/),
+      // 1 page_view
+      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      // 1 purchase
+      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=purchase&/)),
     ])
     await page.waitForTimeout(5000)
   } catch (error) {

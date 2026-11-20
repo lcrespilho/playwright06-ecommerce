@@ -12,7 +12,7 @@ export const HEADLESS = process.env.HEADLESS !== 'false'
 export const DEVTOOLS = process.env.DEVTOOLS === 'true'
 export const LOG = process.env.LOG === 'true'
 const USERBASE = 20 // number of users
-const FIREBASEDBNAMESPACE = 'ecommerce04'
+const FIREBASEDBNAMESPACE = 'ecommerce05'
 
 let activeJobs = 0
 
