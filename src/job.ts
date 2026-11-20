@@ -116,10 +116,10 @@ export async function job(sessionName: string) {
         referer,
       }),
       // 1 page_view
-      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
       // 1 view_promotion
       page.waitForResponse(
-        responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=view_promotion&/),
+        responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_promotion&/),
       ),
     ])
 
@@ -135,10 +135,10 @@ export async function job(sessionName: string) {
       page.locator(Math.random() < 0.75 ? 'text=pdl1.html' : 'text=pdl2.html').click(),
       page.waitForURL(/pdl.\.html/, { waitUntil: 'networkidle' }),
       // 1 page_view
-      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
       // 1 view_item_list
       page.waitForResponse(
-        responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=view_item_list&/),
+        responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_item_list&/),
       ),
     ])
     await page.waitForTimeout(5000)
@@ -157,11 +157,11 @@ export async function job(sessionName: string) {
         .click(),
       page.waitForURL(/pdp.\.html/, { waitUntil: 'networkidle' }),
       // 1 select_item on PDL
-      page.waitForRequest(requestMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=select_item&/)),
+      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=select_item&/)),
       // 1 page_view on PDP
-      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
       // 1 view_item on PDP
-      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=view_item&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_item&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -176,7 +176,7 @@ export async function job(sessionName: string) {
       page.locator('text=add_to_cart').click(),
       // 1 add_to_cart on PDP
       page.waitForResponse(
-        responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=add_to_cart&/),
+        responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=add_to_cart&/),
       ),
     ])
     await page.waitForTimeout(5000)
@@ -192,9 +192,9 @@ export async function job(sessionName: string) {
       page.locator('text=cart.html').click(),
       page.waitForURL(/cart\.html/, { waitUntil: 'networkidle' }),
       // 1 page_view
-      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
       // 1 view_cart
-      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=view_cart&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_cart&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -209,11 +209,11 @@ export async function job(sessionName: string) {
       page.locator('text=checkout').click(),
       // 1 begin_checkout on Cart
       page.waitForRequest(
-        requestMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=begin_checkout&/),
+        requestMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=begin_checkout&/),
       ),
       page.waitForURL(/checkout\.html/, { waitUntil: 'networkidle' }),
       // 1 page_view on Checkout
-      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -228,7 +228,7 @@ export async function job(sessionName: string) {
       page.locator('text=add_shipping_info').click(),
       // 1 add_shipping_info
       page.waitForResponse(
-        responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*n=add_shipping_info&/),
+        responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*n=add_shipping_info&/),
       ),
     ])
     await page.waitForTimeout(5000)
@@ -244,7 +244,7 @@ export async function job(sessionName: string) {
       page.locator('text=add_payment_info').click(),
       // 1 add_payment_info
       page.waitForResponse(
-        responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=add_payment_info&/),
+        responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=add_payment_info&/),
       ),
     ])
     await page.waitForTimeout(5000)
@@ -260,9 +260,9 @@ export async function job(sessionName: string) {
       page.locator('text=finalizar compra').click(),
       page.waitForURL(/typ\.html/),
       // 1 page_view
-      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
       // 1 purchase
-      page.waitForResponse(responseMatcher(/(google.*collect|louren.co.in\/sgtm.*)\?v=2.*G-N2DW3RHY0F.*en=purchase&/)),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=purchase&/)),
     ])
     await page.waitForTimeout(5000)
   } catch (error) {
