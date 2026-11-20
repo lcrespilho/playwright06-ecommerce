@@ -118,9 +118,7 @@ export async function job(sessionName: string) {
       // 1 page_view
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
       // 1 view_promotion
-      page.waitForResponse(
-        responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_promotion&/),
-      ),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_promotion&/)),
     ])
 
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -137,9 +135,7 @@ export async function job(sessionName: string) {
       // 1 page_view
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
       // 1 view_item_list
-      page.waitForResponse(
-        responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_item_list&/),
-      ),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_item_list&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -150,19 +146,27 @@ export async function job(sessionName: string) {
     }
 
     // product click on PDL
-    await Promise.all([
-      page
-        .locator('button', { hasText: 'pdp' })
-        .nth(Math.random() < 0.75 ? 0 : 1)
-        .click(),
-      page.waitForURL(/pdp.\.html/, { waitUntil: 'networkidle' }),
-      // 1 select_item on PDL
-      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=select_item&/)),
-      // 1 page_view on PDP
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
-      // 1 view_item on PDP
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_item&/)),
-    ])
+    {
+      await using _delayPdp = await page.route(/\/ecommerce\/pdp\d\.html/, async (route, request) => {
+        if (request.isNavigationRequest()) {
+          await new Promise(r => setTimeout(r, 6000))
+        }
+        await route.continue()
+      })
+      await Promise.all([
+        page
+          .locator('button', { hasText: 'pdp' })
+          .nth(Math.random() < 0.75 ? 0 : 1)
+          .click(),
+        page.waitForURL(/pdp.\.html/, { waitUntil: 'networkidle' }),
+        // 1 select_item on PDL
+        page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=select_item&/)),
+        // 1 page_view on PDP
+        page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+        // 1 view_item on PDP
+        page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_item&/)),
+      ])
+    }
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
       LOG && console.log('Skip add_to_cart (3/8)')
@@ -175,9 +179,7 @@ export async function job(sessionName: string) {
     await Promise.all([
       page.locator('text=add_to_cart').click(),
       // 1 add_to_cart on PDP
-      page.waitForResponse(
-        responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=add_to_cart&/),
-      ),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=add_to_cart&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -208,9 +210,7 @@ export async function job(sessionName: string) {
     await Promise.all([
       page.locator('text=checkout').click(),
       // 1 begin_checkout on Cart
-      page.waitForRequest(
-        requestMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=begin_checkout&/),
-      ),
+      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=begin_checkout&/)),
       page.waitForURL(/checkout\.html/, { waitUntil: 'networkidle' }),
       // 1 page_view on Checkout
       page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
@@ -227,9 +227,7 @@ export async function job(sessionName: string) {
     await Promise.all([
       page.locator('text=add_shipping_info').click(),
       // 1 add_shipping_info
-      page.waitForResponse(
-        responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*n=add_shipping_info&/),
-      ),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*n=add_shipping_info&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -243,9 +241,7 @@ export async function job(sessionName: string) {
     await Promise.all([
       page.locator('text=add_payment_info').click(),
       // 1 add_payment_info
-      page.waitForResponse(
-        responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=add_payment_info&/),
-      ),
+      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=add_payment_info&/)),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
