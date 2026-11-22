@@ -5,15 +5,15 @@ import { job } from './job'
 
 /** SETTINGS **/
 const CONCURRENCY = 2
-export const CHURNPROBABILITY = 0 // User churn chance
-export const NAVIGATIONSKIPTHRESHOLD = 0.0 // Chance to drop navigation between steps
-export const GRANTCONSENTPROBABILITY = 1 // Probability to accept cookie consent
+export const CHURNPROBABILITY = 0.2 // User churn chance
+export const NAVIGATIONSKIPTHRESHOLD = 0.1 // Chance to drop navigation between steps
+export const GRANTCONSENTPROBABILITY = 0.5 // Probability to accept cookie consent
 export const HEADLESS = process.env.HEADLESS !== 'false'
 export const DEVTOOLS = process.env.DEVTOOLS === 'true'
 export const LOG = process.env.LOG === 'true'
-const USERBASE = 20 // number of users
-const FIREBASEDBNAMESPACE = 'ecommerce01'
-const BOTVERSION = '4'
+const USERBASE = 1000 // number of users
+const FIREBASEDBNAMESPACE = 'ecommerce02'
+const BOTVERSION = '5'
 
 let activeJobs = 0
 
