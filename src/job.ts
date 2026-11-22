@@ -5,9 +5,16 @@ import { db } from './database'
 import { CHURNPROBABILITY, NAVIGATIONSKIPTHRESHOLD, DEVTOOLS, HEADLESS, LOG, GRANTCONSENTPROBABILITY } from './index'
 import { responseMatcher, requestMatcher } from '@lcrespilho/playwright-utils'
 
+declare global {
+  interface Window {
+    is_playwright_bot: boolean
+    bot_version: string
+  }
+}
+
 let browser: Browser
 
-export async function job(sessionName: string) {
+export async function job(sessionName: string, botVersion: string) {
   let page: Page
   let context: BrowserContext
 
@@ -66,18 +73,10 @@ export async function job(sessionName: string) {
       ])
     }
 
-    await context.addInitScript({
-      content: `
+    await context.addInitScript(botVersion => {
       window.is_playwright_bot = true // feed GA4 custom dimensions (event and user scopes)
-      window.bot_version = '3' // feed GA4 event scoped dimension
-      // Bypass navigator.webdriver Bot detection
-      Object.defineProperty(Navigator.prototype, 'webdriver', {
-        configurable: true,
-        enumerable: true,
-        value: false,
-      })
-    `,
-    })
+      window.bot_version = botVersion // feed GA4 event scoped dimension
+    }, botVersion)
 
     const referrals = [
       'https://www.google.com/',
@@ -279,11 +278,9 @@ export async function job(sessionName: string) {
           LOG && console.log('saving session cookies')
           await db.ref(sessionName).set(sessionCookies)
         }
-        return true // indicates success in flow execution
       }
     } catch (error) {
       console.error('E2:', error)
     }
-    return false // indicates failure in flow execution
   }
 }

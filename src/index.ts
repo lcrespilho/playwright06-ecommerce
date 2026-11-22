@@ -12,60 +12,40 @@ export const HEADLESS = process.env.HEADLESS !== 'false'
 export const DEVTOOLS = process.env.DEVTOOLS === 'true'
 export const LOG = process.env.LOG === 'true'
 const USERBASE = 20 // number of users
-const FIREBASEDBNAMESPACE = 'ecommerce05'
+const FIREBASEDBNAMESPACE = 'ecommerce01'
+const BOTVERSION = '4'
 
 let activeJobs = 0
 
-type Session = {
+export type Session = {
   sessionName: string
   status: 'free' | 'locked'
-  leaseUntil: number
 }
 
+// O controle de sessões serve para que duas navegações nunca ocorram com a mesma sessão/usuário.
 const sessions: Session[] = new Array(USERBASE).fill(0).map((_, idx) => ({
   sessionName: `${FIREBASEDBNAMESPACE}/session_${idx.toString().padStart(5, '0')}`,
   status: 'free',
-  leaseUntil: 0,
 }))
-
-function getFreeSession(sessions: Session[]) {
-  // Clean up expired session leases before returning a free session
-  sessions
-    .filter(session => session.status === 'locked')
-    .forEach(session => {
-      if (Math.round(performance.now() / 1000) > session.leaseUntil) {
-        LOG && console.log('liberando lease')
-        session.leaseUntil = 0
-        session.status = 'free'
-      }
-    })
-
+function getFreeSession(): Session | undefined {
   const freeSessions = sessions.filter(session => session.status === 'free')
-  const freeSession = freeSessions[Math.floor(Math.random() * freeSessions.length)]
-  if (freeSession) {
-    // Lock the session for 6 minutes (GA session time = 5 min)
-    freeSession.leaseUntil = Math.round(performance.now() / 1000) + 6 * 60 // now + 6 minutes
-    freeSession.status = 'locked'
+  if (freeSessions.length) {
+    const freeSession = freeSessions[Math.floor(Math.random() * freeSessions.length)]
+    return freeSession
   }
-  return freeSession
 }
 
-async function startNewJob() {
-  const session = getFreeSession(sessions)
-  if (session) {
+setInterval(async () => {
+  const session = getFreeSession()
+  if (session && activeJobs < CONCURRENCY) {
     activeJobs++
-    LOG && console.log('\nNew job')
-    await job(session.sessionName)
-    session.leaseUntil = Math.round(performance.now() / 1000) + 6 * 60 // now + 6 minutes
+    session.status = 'locked' // Lock the session/user
+    console.log(
+      `🟢 new job: jobs: ${activeJobs}/${CONCURRENCY} - locked sessions: ${sessions.filter(session => session.status === 'locked').length}/${USERBASE}`,
+    )
+    await job(session.sessionName, BOTVERSION)
+    console.log('job finished')
+    session.status = 'free' // Unlock the session/user
     activeJobs--
-  }
-}
-
-setInterval(() => {
-  console.log(
-    `active jobs: ${activeJobs}/${CONCURRENCY} - locked sessions: ${sessions.filter(session => session.status === 'locked').length}/${USERBASE}`,
-  )
-  if (activeJobs < CONCURRENCY) {
-    startNewJob()
   }
 }, 5000)
