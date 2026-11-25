@@ -4,16 +4,16 @@ import { job } from './job'
 // GCP e2-medium with 2 vCPUs and 4GB-RAM supports ~8 instances (maximum)
 
 /** SETTINGS **/
-const CONCURRENCY = 2
-export const CHURNPROBABILITY = 0.2 // User churn chance
-export const NAVIGATIONSKIPTHRESHOLD = 0.1 // Chance to drop navigation between steps
-export const GRANTCONSENTPROBABILITY = 0.5 // Probability to accept cookie consent
-export const HEADLESS = process.env.HEADLESS !== 'false'
-export const DEVTOOLS = process.env.DEVTOOLS === 'true'
-export const LOG = process.env.LOG === 'true'
-const USERBASE = 1000 // number of users
-const FIREBASEDBNAMESPACE = 'ecommerce02'
-const BOTVERSION = '5'
+const CONCURRENCY: number = 2
+export const CHURNPROBABILITY: number = 0.2 // User churn chance
+export const NAVIGATIONSKIPTHRESHOLD: number = 0.1 // Chance to drop navigation between steps
+export const GRANTCONSENTPROBABILITY: number = 0.5 // Probability to accept cookie consent
+export const HEADLESS: boolean = process.env.HEADLESS !== 'false'
+export const DEVTOOLS: boolean = process.env.DEVTOOLS === 'true'
+export const LOG: boolean = process.env.LOG === 'true'
+export const BOTVERSION: string = '6' // feeds GA4 event parameter "bot_version"
+const USERBASE: number = 1000 // number of users
+const FIREBASEDBNAMESPACE: string = 'ecommerce06'
 
 let activeJobs = 0
 
@@ -43,7 +43,7 @@ setInterval(async () => {
     console.log(
       `🟢 new job: jobs: ${activeJobs}/${CONCURRENCY} - locked sessions: ${sessions.filter(session => session.status === 'locked').length}/${USERBASE}`,
     )
-    await job(session.sessionName, BOTVERSION)
+    await job(session.sessionName)
     console.log('job finished')
     session.status = 'free' // Unlock the session/user
     activeJobs--

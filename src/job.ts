@@ -1,8 +1,16 @@
-import type { Browser, BrowserContext, LaunchOptions, Page, Request, Response } from 'playwright'
+import type { Browser, BrowserContext, LaunchOptions, Page } from 'playwright'
 import { chromium, devices } from 'playwright'
 import { fakerPT_BR as faker } from '@faker-js/faker'
 import { db } from './database'
-import { CHURNPROBABILITY, NAVIGATIONSKIPTHRESHOLD, DEVTOOLS, HEADLESS, LOG, GRANTCONSENTPROBABILITY } from './index'
+import {
+  CHURNPROBABILITY,
+  NAVIGATIONSKIPTHRESHOLD,
+  DEVTOOLS,
+  HEADLESS,
+  LOG,
+  GRANTCONSENTPROBABILITY,
+  BOTVERSION,
+} from './index'
 import { responseMatcher, requestMatcher } from '@lcrespilho/playwright-utils'
 
 declare global {
@@ -14,7 +22,7 @@ declare global {
 
 let browser: Browser
 
-export async function job(sessionName: string, botVersion: string) {
+export async function job(sessionName: string) {
   let page: Page
   let context: BrowserContext
 
@@ -50,7 +58,8 @@ export async function job(sessionName: string, botVersion: string) {
     // Se o banner de cookies aparecer, clico em allow ou decline com 50% de chance
     const cookiebotAllowLocator = page.locator('#CybotCookiebotDialogBodyLevelButtonLevelOptinAllowAll')
     const cookiebotDeclineLocator = page.locator('#CybotCookiebotDialogBodyButtonDecline')
-    Math.random() <= GRANTCONSENTPROBABILITY
+    const isConsented = Math.random() <= GRANTCONSENTPROBABILITY
+    isConsented
       ? cookiebotAllowLocator
           .click()
           .then(() => LOG && console.log('cookies granted'))
@@ -76,7 +85,7 @@ export async function job(sessionName: string, botVersion: string) {
     await context.addInitScript(botVersion => {
       window.is_playwright_bot = true // feed GA4 custom dimensions (event and user scopes)
       window.bot_version = botVersion // feed GA4 event scoped dimension
-    }, botVersion)
+    }, BOTVERSION)
 
     const referrals = [
       'https://www.google.com/',
@@ -106,8 +115,7 @@ export async function job(sessionName: string, botVersion: string) {
 
     // Home page
     // 1 page_view + 3 view_promotion + 1 optional select_promotion (80% chance) + 1 scroll
-    // Obs: curiosamente, múltiplos page.waitForResponse() olham para a mesma requisição. Isso significa que não preciso mais usar o
-    // enableGADebug para garantir que não haja batch de eventos.
+    // Obs: múltiplos page.waitForResponse() olham para a mesma requisição => não adianta inserir 3 esperas por view_promotion.
     LOG && console.log(`utms: ${utm}; referrer: ${referer}`)
     await Promise.all([
       page.goto('https://louren.co.in/ecommerce/home.html' + utm, {
@@ -115,9 +123,9 @@ export async function job(sessionName: string, botVersion: string) {
         referer,
       }),
       // 1 page_view
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(makeGA4Regex('page_view', false))),
       // 1 view_promotion
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_promotion&/)),
+      page.waitForResponse(responseMatcher(makeGA4Regex('view_promotion', false))),
     ])
 
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -132,9 +140,9 @@ export async function job(sessionName: string, botVersion: string) {
       page.locator(Math.random() < 0.75 ? 'text=pdl1.html' : 'text=pdl2.html').click(),
       page.waitForURL(/pdl.\.html/, { waitUntil: 'networkidle' }),
       // 1 page_view
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(makeGA4Regex('page_view', false))),
       // 1 view_item_list
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_item_list&/)),
+      page.waitForResponse(responseMatcher(makeGA4Regex('view_item_list', false))),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -146,9 +154,11 @@ export async function job(sessionName: string, botVersion: string) {
 
     // product click on PDL
     {
+      const selectItemResponsePromise = page.waitForResponse(responseMatcher(makeGA4Regex('select_item', false)))
+      // Inibe o carregamento da PDP até que o select_item seja coletado
       await using _delayPdp = await page.route(/\/ecommerce\/pdp\d\.html/, async (route, request) => {
         if (request.isNavigationRequest()) {
-          await new Promise(r => setTimeout(r, 6000))
+          await selectItemResponsePromise
         }
         await route.continue()
       })
@@ -159,11 +169,11 @@ export async function job(sessionName: string, botVersion: string) {
           .click(),
         page.waitForURL(/pdp.\.html/, { waitUntil: 'networkidle' }),
         // 1 select_item on PDL
-        page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=select_item&/)),
+        selectItemResponsePromise,
         // 1 page_view on PDP
-        page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+        page.waitForResponse(responseMatcher(makeGA4Regex('page_view', false))),
         // 1 view_item on PDP
-        page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_item&/)),
+        page.waitForResponse(responseMatcher(makeGA4Regex('view_item', false))),
       ])
     }
     await page.waitForTimeout(5000)
@@ -178,7 +188,7 @@ export async function job(sessionName: string, botVersion: string) {
     await Promise.all([
       page.locator('text=add_to_cart').click(),
       // 1 add_to_cart on PDP
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=add_to_cart&/)),
+      page.waitForResponse(responseMatcher(makeGA4Regex('add_to_cart', false))),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -188,14 +198,14 @@ export async function job(sessionName: string, botVersion: string) {
       LOG && console.log("Don't skip Cart (4/8)")
     }
 
-    // Cart
+    // PDP -> Cart
     await Promise.all([
       page.locator('text=cart.html').click(),
       page.waitForURL(/cart\.html/, { waitUntil: 'networkidle' }),
-      // 1 page_view
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
-      // 1 view_cart
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=view_cart&/)),
+      // 1 page_view on Cart
+      page.waitForResponse(responseMatcher(makeGA4Regex('page_view', isConsented))),
+      // 1 view_cart on Cart
+      page.waitForResponse(responseMatcher(makeGA4Regex('view_cart', isConsented))),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -209,10 +219,10 @@ export async function job(sessionName: string, botVersion: string) {
     await Promise.all([
       page.locator('text=checkout').click(),
       // 1 begin_checkout on Cart
-      page.waitForRequest(requestMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=begin_checkout&/)),
+      page.waitForRequest(requestMatcher(makeGA4Regex('begin_checkout', isConsented))),
       page.waitForURL(/checkout\.html/, { waitUntil: 'networkidle' }),
       // 1 page_view on Checkout
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(makeGA4Regex('page_view', isConsented))),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -226,7 +236,7 @@ export async function job(sessionName: string, botVersion: string) {
     await Promise.all([
       page.locator('text=add_shipping_info').click(),
       // 1 add_shipping_info
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*n=add_shipping_info&/)),
+      page.waitForResponse(responseMatcher(makeGA4Regex('add_shipping_info', isConsented))),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -240,7 +250,7 @@ export async function job(sessionName: string, botVersion: string) {
     await Promise.all([
       page.locator('text=add_payment_info').click(),
       // 1 add_payment_info
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=add_payment_info&/)),
+      page.waitForResponse(responseMatcher(makeGA4Regex('add_payment_info', isConsented))),
     ])
     await page.waitForTimeout(5000)
     if (Math.random() < NAVIGATIONSKIPTHRESHOLD) {
@@ -255,9 +265,9 @@ export async function job(sessionName: string, botVersion: string) {
       page.locator('text=finalizar compra').click(),
       page.waitForURL(/typ\.html/),
       // 1 page_view
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=page_view&/)),
+      page.waitForResponse(responseMatcher(makeGA4Regex('page_view', isConsented))),
       // 1 purchase
-      page.waitForResponse(responseMatcher(/google.*collect\?v=2.*G-N2DW3RHY0F.*en=purchase&/)),
+      page.waitForResponse(responseMatcher(makeGA4Regex('purchase', isConsented))),
     ])
     await page.waitForTimeout(5000)
   } catch (error) {
@@ -282,5 +292,29 @@ export async function job(sessionName: string, botVersion: string) {
     } catch (error) {
       console.error('E2:', error)
     }
+  }
+}
+
+function makeGA4Regex(
+  /** GA4 event name */
+  eventName:
+    | 'page_view'
+    | 'view_promotion'
+    | 'view_item_list'
+    | 'select_item'
+    | 'view_item'
+    | 'add_to_cart'
+    | 'view_cart'
+    | 'begin_checkout'
+    | 'add_shipping_info'
+    | 'add_payment_info'
+    | 'purchase',
+  /** If the hit must or not have UPD data */
+  withUPD: boolean,
+): RegExp {
+  if (withUPD) {
+    return new RegExp(`^(?=.*&em=tv\\.1~em\\.[^&]{30,}).*google.*collect\\?v=2.*G-N2DW3RHY0F&.*&en=${eventName}`)
+  } else {
+    return new RegExp(`^(?!.*&em=tv\\.1~em\\.[^&]{30,}).*google.*collect\\?v=2.*G-N2DW3RHY0F&.*&en=${eventName}`)
   }
 }
